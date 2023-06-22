@@ -1,57 +1,50 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
+    id("common")
     application
-    kotlin("jvm") version Kotlin.version
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
 }
+
+val githubUser: String? by project
+val githubPassword: String? by project
 
 repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
-}
-
-application {
-    mainClass.set("no.nav.dagpenger.SERVICENAME")
-}
-
-kotlin {
-    jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(17))
+    maven {
+        url = uri("https://maven.pkg.github.com/navikt/dp-kontrakter")
+        credentials {
+            username = githubUser
+            password = githubPassword
+        }
     }
 }
 
 dependencies {
-    implementation(RapidAndRivers)
 
-    implementation(Konfig.konfig)
-    implementation(Kotlin.Logging.kotlinLogging)
+    // Kontrakter for dp-iverksett
+    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20230620164418_dc7edb7")
 
-    testImplementation(kotlin("test"))
+    implementation(libs.jackson.core)
+    implementation(libs.jackson.datatype.jsr310)
+
+    // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-slf4j/
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:${libs.versions.kotlinx.coroutines.slf4j.get()}")
+
+    // POC - iverksett api
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.jackson)
+    implementation(libs.ktor.client.logging.jvm)
+    implementation("com.github.navikt.dp-biblioteker:oauth2-klient:${libs.versions.dagpenger.biblioteker.get()}")
+
+    implementation(libs.rapids.and.rivers)
+    implementation(libs.konfig)
+    implementation(libs.kotlin.logging)
+
+    testImplementation(libs.ktor.client.mock)
+    testImplementation("io.kotest:kotest-assertions-core-jvm:${libs.versions.kotest.get()}")
+
+    testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-
-    testLogging {
-        showExceptions = true
-        showStackTraces = true
-        exceptionFormat = TestExceptionFormat.FULL
-        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
-    }
-}
-
-tasks.withType<Jar>().configureEach {
-    dependsOn("test")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    manifest {
-        attributes(mapOf("Main-Class" to application.mainClass.get()))
-    }
-
-    from(
-        configurations.runtimeClasspath.get().map {
-            if (it.isDirectory) it else zipTree(it)
-        }
-    )
+application {
+    mainClass.set("no.nav.dagpenger.vedtak.iverksett.AppKt")
 }
