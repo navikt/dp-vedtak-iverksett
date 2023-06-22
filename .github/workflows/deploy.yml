@@ -1,7 +1,10 @@
 name: Build and deploy
 
 #Kommenter inn
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
 
 jobs:
   build:
@@ -18,20 +21,22 @@ jobs:
         with:
           java-version: 19
           distribution: temurin
+
       - uses: gradle/gradle-build-action@v2
         env:
           ORG_GRADLE_PROJECT_githubUser: x-access-token
           ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
         with:
+          gradle-version: wrapper
           arguments: --configuration-cache build installDist
 
-      - uses: nais/docker-build-push@v0
-        name: docker-build-push
+      - name: docker-build-push
+        uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
           team: teamdagpenger
-          tag: latest # optional tag added
           push_image: true # optional, default true
+          tag: ${{ github.sha }}
           dockerfile: Dockerfile # optional, default Dockerfile
           docker_context: . # optional, default .
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -44,6 +49,7 @@ jobs:
     needs: [ build ]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: dev-gcp
     steps:
       - uses: actions/checkout@v3
       - uses: nais/deploy/actions/deploy@v1
@@ -67,6 +73,5 @@ jobs:
 #          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
 #          CLUSTER: prod-gcp
 #          RESOURCE: .nais/nais.yaml
-#          VAR: image=${{ needs.build.outputs.image }}
 #          VARS: .nais/vars-prod.yaml
 #          PRINT_PAYLOAD: true
