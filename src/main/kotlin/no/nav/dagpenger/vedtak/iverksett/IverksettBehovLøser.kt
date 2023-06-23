@@ -1,13 +1,18 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.slf4j.MDCContext
+import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
-import no.nav.helse.rapids_rivers.MessageProblems
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 
-class IverksettBehovLøser(private val rapidsConnection: RapidsConnection) : River.PacketListener {
+internal class IverksettBehovLøser(
+    private val rapidsConnection: RapidsConnection,
+    private val iverksettClient: IverksettClient,
+) : River.PacketListener {
 
     private val BehovIverksett = "Iverksett"
 
@@ -33,18 +38,18 @@ class IverksettBehovLøser(private val rapidsConnection: RapidsConnection) : Riv
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        val tilIverksettDTO = packet.tilIverksettDTO()
-
+        runBlocking {
+            withContext(MDCContext()) {
+                try {
+                    iverksettClient.iverksett(packet.tilIverksettDTO())
+                } catch (e: Exception) {
+                    logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
+                    sikkerLogger.error { "Feil mot iverksetting $e" }
+                    throw e
+                }
+            }
+        }
         packet["@løsning"] = mapOf(BehovIverksett to true)
-
         rapidsConnection.publish(packet.toJson())
-    }
-
-    override fun onError(problems: MessageProblems, context: MessageContext) {
-        logger.error { problems.toExtendedReport() }
-    }
-
-    override fun onSevere(error: MessageProblems.MessageException, context: MessageContext) {
-        logger.error { error }
     }
 }

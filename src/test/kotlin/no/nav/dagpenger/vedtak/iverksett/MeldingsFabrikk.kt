@@ -41,7 +41,7 @@ fun behovOmIverksettingAvRammevedtak(ident: String = "12345123451", virkningsdat
             }
     """.trimIndent()
 
-fun behovOmIverksettingAvLøpendeVedtak(
+fun behovOmIverksettingAvUtbetalingsvedtak(
     vedtakId: UUID = UUID.fromString("408f11d9-4be8-450a-8b7a-c2f3f9811859"),
     virkningsdato: LocalDate = 11 juni 2023,
 ) =
