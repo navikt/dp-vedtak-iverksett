@@ -5,6 +5,9 @@ on:
     branches-ignore:
       - 'dependabot/**'
 
+env:
+  IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
 jobs:
   build:
     name: Build and publish Docker image
