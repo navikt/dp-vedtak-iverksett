@@ -10,7 +10,7 @@ import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
 import no.nav.helse.rapids_rivers.River
 
-internal class IverksettBehovLøser(
+internal class IverksettBehovløser(
     private val rapidsConnection: RapidsConnection,
     private val iverksettClient: IverksettClient,
 ) : River.PacketListener {

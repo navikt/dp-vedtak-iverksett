@@ -18,7 +18,7 @@ class IverksettBehovløserTest {
     private val iverksettClient: IverksettClient = mockk()
 
     init {
-        IverksettBehovLøser(testRapid, iverksettClient)
+        IverksettBehovløser(testRapid, iverksettClient)
     }
 
     @Test

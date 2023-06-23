@@ -16,10 +16,17 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
 
     init {
         rapidsConnection.register(this)
+
+        IverksettBehovløser(
+            rapidsConnection = rapidsConnection,
+            iverksettClient = IverksettClient(
+                Configuration.iverksettApiUrl,
+                Configuration.iverksettClientTokenSupplier,
+            ),
+        )
     }
 
     fun start() = rapidsConnection.start()
-    fun stop() = rapidsConnection.stop()
 
     override fun onStartup(rapidsConnection: RapidsConnection) {
         logger.info { "Starter opp dp-vedtak-iverksett" }
