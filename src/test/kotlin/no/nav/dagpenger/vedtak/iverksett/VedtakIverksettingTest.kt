@@ -26,6 +26,12 @@ class VedtakIverksettingTest {
 
     @Test
     fun `motta iverksettingsbehov for løpendeVedtak, kaller iverksett og løs behovet`() {
+        testRapid.sendTestMessage(behovOmIverksettingAvLøpendeVedtak())
+
+        testRapid.inspektør.size shouldBe 1
+        val iverksattRammevedtak = testRapid.inspektør.message(0)
+        iverksattRammevedtak["@løsning"]["Iverksett"].asBoolean() shouldBe true
+        iverksattRammevedtak["Iverksett"]["utbetalingsdager"].size() shouldBe 10
     }
 
     @Test
