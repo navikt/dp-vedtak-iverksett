@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
+import mu.withLoggingContext
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -38,18 +39,28 @@ internal class IverksettBehovLøser(
     }
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
-        runBlocking {
-            withContext(MDCContext()) {
-                try {
-                    iverksettClient.iverksett(packet.tilIverksettDTO())
-                } catch (e: Exception) {
-                    logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
-                    sikkerLogger.error { "Feil mot iverksetting $e" }
-                    throw e
+        withLoggingContext(contextMap(packet)) {
+            sikkerLogger.info { "Mottok behov om iverksetting av vedtak: " + packet.toJson() }
+            runBlocking {
+                withContext(MDCContext()) {
+                    try {
+                        iverksettClient.iverksett(packet.tilIverksettDTO())
+                    } catch (e: Exception) {
+                        logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
+                        sikkerLogger.error { "Feil mot iverksetting $e" }
+                        throw e
+                    }
                 }
             }
+            packet["@løsning"] = mapOf(BehovIverksett to true)
+            rapidsConnection.publish(packet.toJson())
         }
-        packet["@løsning"] = mapOf(BehovIverksett to true)
-        rapidsConnection.publish(packet.toJson())
     }
+
+    private fun contextMap(packet: JsonMessage) = mapOf(
+        behandlingId to packet["$BehovIverksett.behandlingId"].asText(),
+        "vedtakId" to packet["$BehovIverksett.vedtakId"].asText(),
+        "iverksettingId" to packet["iverksettingId"].asText(),
+        "behovId" to packet["@behovId"].asText(),
+    )
 }
