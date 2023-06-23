@@ -40,6 +40,7 @@ internal class IverksettBehovløser(
 
     override fun onPacket(packet: JsonMessage, context: MessageContext) {
         withLoggingContext(contextMap(packet)) {
+            logger.info { "Mottok $BehovIverksett. Se sikkerlogg for mer detaljer" }
             sikkerLogger.info { "Mottok behov om iverksetting av vedtak: " + packet.toJson() }
             runBlocking {
                 withContext(MDCContext()) {
