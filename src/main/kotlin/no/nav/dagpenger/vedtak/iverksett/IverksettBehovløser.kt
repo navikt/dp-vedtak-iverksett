@@ -18,8 +18,8 @@ internal class IverksettBehovløser(
     private val BehovIverksett = "Iverksett"
 
     private companion object {
-        var logger = KotlinLogging.logger {}
-        var sikkerLogger = KotlinLogging.logger("tjenestekall.VedtakFattetMottak")
+        val logger = KotlinLogging.logger {}
+        val sikkerLogger = KotlinLogging.logger("tjenestekall.IverksettBehovløser")
     }
 
     init {
