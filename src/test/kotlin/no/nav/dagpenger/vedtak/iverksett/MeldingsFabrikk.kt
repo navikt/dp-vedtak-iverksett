@@ -21,13 +21,11 @@ fun behovOmIverksettingAvRammevedtak(ident: String = "12345123451", virkningsdat
                 "behandlingId": "2c930751-5c4e-4bbd-80cc-1b3ab36eabf5",
                 "vedtakstidspunkt": "+999999999-12-31T23:59:59.999999999",
                 "virkningsdato": "2019-08-24",
-                "utbetalingsdager": [],
                 "utfall": "Innvilget"
               },
               "behandlingId": "2c930751-5c4e-4bbd-80cc-1b3ab36eabf5",
               "vedtakstidspunkt": "+999999999-12-31T23:59:59.999999999",
               "virkningsdato": "$virkningsdato",
-              "utbetalingsdager": [],
               "utfall": "Innvilget",
               "@id": "723784aa-d01f-4448-a96d-272d49a88775",
               "@opprettet": "2023-06-19T10:56:08.627225",

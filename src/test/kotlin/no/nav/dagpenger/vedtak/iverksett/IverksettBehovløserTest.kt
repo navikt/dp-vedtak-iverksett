@@ -36,7 +36,6 @@ class IverksettBehovløserTest {
         testRapid.inspektør.size shouldBe 1
         val iverksattRammevedtak = testRapid.inspektør.message(0)
         iverksattRammevedtak["@løsning"]["Iverksett"].asBoolean() shouldBe true
-        iverksattRammevedtak["Iverksett"]["utbetalingsdager"].size() shouldBe 0
     }
 
     @Test
