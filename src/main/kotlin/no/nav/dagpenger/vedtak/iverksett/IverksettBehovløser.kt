@@ -46,15 +46,15 @@ internal class IverksettBehovløser(
                 withContext(MDCContext()) {
                     try {
                         iverksettClient.iverksett(packet.tilIverksettDTO())
-                        packet["@løsning"] = mapOf(BehovIverksett to true)
-                        rapidsConnection.publish(packet.toJson())
                     } catch (e: Exception) {
                         logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
                         sikkerLogger.error { "Feil mot iverksetting $e" }
-                        // throw e
+                        throw e
                     }
                 }
             }
+            packet["@løsning"] = mapOf(BehovIverksett to true)
+            rapidsConnection.publish(packet.toJson())
         }
     }
 
