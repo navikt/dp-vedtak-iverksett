@@ -18,6 +18,7 @@ fun behovOmIverksettingAvRammevedtak(ident: String = "12345123451", virkningsdat
               "tilstand": "Mottatt",
               "Iverksett": {
                 "vedtakId": "408f11d9-4be8-450a-8b7a-c2f3f9811859",
+                "sakId": "${UUID.randomUUID()}",
                 "behandlingId": "2c930751-5c4e-4bbd-80cc-1b3ab36eabf5",
                 "vedtakstidspunkt": "+999999999-12-31T23:59:59.999999999",
                 "virkningsdato": "2019-08-24",
@@ -56,6 +57,7 @@ fun behovOmIverksettingAvUtbetalingsvedtak(
         "tilstand": "Mottatt",
         "Iverksett": {
           "vedtakId": "408f11d9-4be8-450a-8b7a-c2f3f9811859",
+          "sakId": "${UUID.randomUUID()}",
           "behandlingId": "0aaa66b9-35c2-4398-aca0-d1d0a9465292",
           "vedtakstidspunkt": "2019-08-24T14:15:22",
           "virkningsdato": "$virkningsdato",

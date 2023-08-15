@@ -1,5 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
@@ -15,12 +16,19 @@ private val BehovIverksett = "Iverksett"
 
 val behandlingId = "behandlingId"
 
-internal fun JsonMessage.tilIverksettDTO(): IverksettDto = IverksettDto(
-    sakId = UUID.randomUUID(),
-    behandlingId = this["$BehovIverksett.behandlingId"].asText().let { UUID.fromString(it) },
-    personIdent = this["ident"].asText(),
-    vedtak = vedtaksdetaljerDagpengerDto(this),
-)
+private val logger = KotlinLogging.logger { }
+
+internal fun JsonMessage.tilIverksettDTO(): IverksettDto {
+    val sakId = this["$BehovIverksett.sakId"]?.asText()
+    return IverksettDto(
+        sakId = sakId?.let { runCatching { UUID.fromString(it) }.getOrNull() } ?: UUID.randomUUID().also {
+            logger.warn("Fikk ikke 'sakId' fra behovet. Iverksett APIet krever pt UUID. sakId var '$sakId' ")
+        },
+        behandlingId = this["$BehovIverksett.behandlingId"].asText().let { UUID.fromString(it) },
+        personIdent = this["ident"].asText(),
+        vedtak = vedtaksdetaljerDagpengerDto(this),
+    )
+}
 
 private fun vedtaksdetaljerDagpengerDto(packet: JsonMessage) =
     VedtaksdetaljerDto(

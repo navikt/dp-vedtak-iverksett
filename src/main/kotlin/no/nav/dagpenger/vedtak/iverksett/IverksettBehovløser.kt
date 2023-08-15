@@ -31,6 +31,7 @@ internal class IverksettBehovløser(
             validate { it.requireKey("$BehovIverksett.behandlingId") }
             validate { it.requireKey("$BehovIverksett.vedtakstidspunkt") }
             validate { it.requireKey("$BehovIverksett.virkningsdato") }
+            validate { it.requireKey("$BehovIverksett.sakId") }
             validate { it.interestedIn("$BehovIverksett.utbetalingsdager") }
             validate { it.requireKey("$BehovIverksett.utfall") }
             validate { it.interestedIn("@behovId", "iverksettingId") }
