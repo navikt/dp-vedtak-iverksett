@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import mu.KotlinLogging
+import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
@@ -27,6 +28,23 @@ internal fun JsonMessage.tilIverksettDTO(): IverksettDto {
         behandlingId = this["$BehovIverksett.behandlingId"].asText().let { UUID.fromString(it) },
         personIdent = this["ident"].asText(),
         vedtak = vedtaksdetaljerDagpengerDto(this),
+        forrigeIverksetting =
+        when (bestemVedtakstype(this)) {
+            VedtakType.UTBETALINGSVEDTAK -> {
+                if (this["$BehovIverksett.forrigeBehandlingId"].asText() != null) {
+                    ForrigeIverksettingDto(
+                        behandlingId =
+                        this["$BehovIverksett.forrigeBehandlingId"].asText().let {
+                            UUID.fromString(it)
+                        },
+                    )
+                } else {
+                    null
+                }
+            }
+
+            else -> null
+        },
     )
 }
 
