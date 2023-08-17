@@ -49,13 +49,13 @@ fun behovOmIverksettingAvUtbetalingsvedtakUtenForrigeBehandlingId(
         "@event_name": "behov",
         "@behovId": "fe6fb8ee-cbc7-46bf-a5d7-fb9b57b279c4",
         "@behov": [
-          "Iverksett"
+          "IverksettUtbetaling"
         ],
         "ident": "12345678911",
         "iverksettingId": "0b853210-cc2b-45d8-9c35-72b39fa1d7f3",
         "vedtakId": "$vedtakId",
         "tilstand": "Mottatt",
-        "Iverksett": {
+        "IverksettUtbetaling": {
           "vedtakId": "408f11d9-4be8-450a-8b7a-c2f3f9811859",
           "sakId": "${UUID.randomUUID()}",
           "behandlingId": "0aaa66b9-35c2-4398-aca0-d1d0a9465292",
@@ -99,13 +99,13 @@ fun behovOmIverksettingAvUtbetalingsvedtakMedForrigeBehandlingId(
         "@event_name": "behov",
         "@behovId": "fe6fb8ee-cbc7-46bf-a5d7-fb9b57b279c4",
         "@behov": [
-          "Iverksett"
+          "IverksettUtbetaling"
         ],
         "ident": "12345678911",
         "iverksettingId": "0b853210-cc2b-45d8-9c35-72b39fa1d7f3",
         "vedtakId": "$vedtakId",
         "tilstand": "Mottatt",
-        "Iverksett": {
+        "IverksettUtbetaling": {
           "vedtakId": "408f11d9-4be8-450a-8b7a-c2f3f9811859",
           "sakId": "${UUID.randomUUID()}",
           "behandlingId": "0aaa66b9-35c2-4398-aca0-d1d0a9465292",

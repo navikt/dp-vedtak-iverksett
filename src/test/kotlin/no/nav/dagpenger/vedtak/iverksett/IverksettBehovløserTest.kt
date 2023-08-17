@@ -37,40 +37,4 @@ class IverksettBehovløserTest {
         val iverksattRammevedtak = testRapid.inspektør.message(0)
         iverksattRammevedtak["@løsning"]["Iverksett"].asBoolean() shouldBe true
     }
-
-    @Test
-    fun `motta iverksettingsbehov for utbetalingsvedtak uten forrigeBehandlingId, kaller iverksett og løs behovet`() {
-        val iverksettDtoSlot = slot<IverksettDto>()
-        coEvery { iverksettClient.iverksett(capture(iverksettDtoSlot)) } just Runs
-
-        testRapid.sendTestMessage(behovOmIverksettingAvUtbetalingsvedtakUtenForrigeBehandlingId())
-
-        coVerify(exactly = 1) {
-            iverksettClient.iverksett(any())
-        }
-        iverksettDtoSlot.isCaptured shouldBe true
-
-        testRapid.inspektør.size shouldBe 1
-        val iverksattUbetalingsvedtak = testRapid.inspektør.message(0)
-        iverksattUbetalingsvedtak["@løsning"]["Iverksett"].asBoolean() shouldBe true
-        iverksattUbetalingsvedtak["Iverksett"]["utbetalingsdager"].size() shouldBe 10
-    }
-
-    @Test
-    fun `motta iverksettingsbehov for utbetalingsvedtak Med forrigeBehandlingId, kaller iverksett og løs behovet`() {
-        val iverksettDtoSlot = slot<IverksettDto>()
-        coEvery { iverksettClient.iverksett(capture(iverksettDtoSlot)) } just Runs
-
-        testRapid.sendTestMessage(behovOmIverksettingAvUtbetalingsvedtakMedForrigeBehandlingId())
-
-        coVerify(exactly = 1) {
-            iverksettClient.iverksett(any())
-        }
-        iverksettDtoSlot.isCaptured shouldBe true
-
-        testRapid.inspektør.size shouldBe 1
-        val iverksattUbetalingsvedtak = testRapid.inspektør.message(0)
-        iverksattUbetalingsvedtak["@løsning"]["Iverksett"].asBoolean() shouldBe true
-        iverksattUbetalingsvedtak["Iverksett"]["utbetalingsdager"].size() shouldBe 10
-    }
 }

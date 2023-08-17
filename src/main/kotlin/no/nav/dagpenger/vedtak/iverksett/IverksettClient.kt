@@ -57,14 +57,14 @@ internal class IverksettClient(
         }
     }
 
-    suspend fun iverksett(iverksettDagpengerDto: IverksettDto) {
+    suspend fun iverksett(iverksettDto: IverksettDto) {
         val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()
         withContext(Dispatchers.IO) {
             httpClient.post(url) {
                 header("nav-call-id", MDC.get(behandlingId))
                 header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
                 header(HttpHeaders.ContentType, ContentType.Application.Json)
-                setBody(iverksettDagpengerDto)
+                setBody(iverksettDto)
             }
         }
     }
