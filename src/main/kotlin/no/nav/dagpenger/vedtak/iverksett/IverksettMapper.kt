@@ -20,7 +20,8 @@ val behandlingId = "behandlingId"
 private val logger = KotlinLogging.logger { }
 
 internal fun JsonMessage.tilIverksettDTO(): IverksettDto {
-    val sakId = this["$BehovIverksett.sakId"]?.asText()
+    val sakId = this["$BehovIverksett.sakId"].asText()
+    val forrigeBehandlingId = this["$BehovIverksett.forrigeBehandlingId"].asText()
     return IverksettDto(
         sakId = sakId?.let { runCatching { UUID.fromString(it) }.getOrNull() } ?: UUID.randomUUID().also {
             logger.warn("Fikk ikke 'sakId' fra behovet. Iverksett APIet krever pt UUID. sakId var '$sakId' ")
@@ -31,18 +32,14 @@ internal fun JsonMessage.tilIverksettDTO(): IverksettDto {
         forrigeIverksetting =
         when (bestemVedtakstype(this)) {
             VedtakType.UTBETALINGSVEDTAK -> {
-                if (this["$BehovIverksett.forrigeBehandlingId"].asText() != "") {
+                if (forrigeBehandlingId != "") {
                     ForrigeIverksettingDto(
-                        behandlingId =
-                        this["$BehovIverksett.forrigeBehandlingId"].asText().let {
-                            UUID.fromString(it)
-                        },
+                        behandlingId = forrigeBehandlingId.let { UUID.fromString(it) },
                     )
                 } else {
                     null
                 }
             }
-
             else -> null
         },
     )
