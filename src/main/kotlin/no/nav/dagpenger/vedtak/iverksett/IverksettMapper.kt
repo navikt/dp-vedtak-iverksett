@@ -31,7 +31,7 @@ internal fun JsonMessage.tilIverksettDTO(): IverksettDto {
         forrigeIverksetting =
         when (bestemVedtakstype(this)) {
             VedtakType.UTBETALINGSVEDTAK -> {
-                if (this["$BehovIverksett.forrigeBehandlingId"].asText() != null) {
+                if (this["$BehovIverksett.forrigeBehandlingId"].asText() != "") {
                     ForrigeIverksettingDto(
                         behandlingId =
                         this["$BehovIverksett.forrigeBehandlingId"].asText().let {
