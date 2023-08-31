@@ -1,8 +1,5 @@
 package no.nav.dagpenger.vedtak.iverksett
 
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.slf4j.MDCContext
-import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import mu.withLoggingContext
 import no.nav.helse.rapids_rivers.JsonMessage
@@ -42,17 +39,18 @@ internal class IverksettBehovløser(
         withLoggingContext(contextMap(packet)) {
             logger.info { "Mottok $BehovIverksett. Se sikkerlogg for mer detaljer" }
             sikkerLogger.info { "Mottok behov om iverksetting av vedtak: " + packet.toJson() }
-            runBlocking {
-                withContext(MDCContext()) {
-                    try {
-                        iverksettClient.iverksett(packet.tilIverksettDTO())
-                    } catch (e: Exception) {
-                        logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
-                        sikkerLogger.error { "Feil mot iverksetting $e" }
-                        throw e
-                    }
-                }
-            }
+// Rammevedtak skal ikke iverksettes mot økonomi. Iverksetting gjør p.t. ikke noe med rammevedtak.
+//            runBlocking {
+//                withContext(MDCContext()) {
+//                    try {
+//                        iverksettClient.iverksett(packet.tilIverksettDTO())
+//                    } catch (e: Exception) {
+//                        logger.error { "Feil mot iverksetting. Se sikkerlogg for detaljer" }
+//                        sikkerLogger.error { "Feil mot iverksetting $e" }
+//                        throw e
+//                    }
+//                }
+//            }
             packet["@løsning"] = mapOf(BehovIverksett to true)
             rapidsConnection.publish(packet.toJson())
         }

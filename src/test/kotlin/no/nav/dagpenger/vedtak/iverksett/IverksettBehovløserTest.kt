@@ -22,16 +22,16 @@ class IverksettBehovløserTest {
     }
 
     @Test
-    fun `motta iverksettingsbehov for rammevedtak, kaller iverksett og løser behovet`() {
+    fun `motta iverksettingsbehov for rammevedtak, skal ikke kalle dp-iverksett, men løse behovet`() {
         val iverksettDtoSlot = slot<IverksettDto>()
         coEvery { iverksettClient.iverksett(capture(iverksettDtoSlot)) } just Runs
 
         testRapid.sendTestMessage(behovOmIverksettingAvRammevedtak(ident))
 
-        coVerify(exactly = 1) {
+        coVerify(exactly = 0) {
             iverksettClient.iverksett(any())
         }
-        iverksettDtoSlot.isCaptured shouldBe true
+        iverksettDtoSlot.isCaptured shouldBe false
 
         testRapid.inspektør.size shouldBe 1
         val iverksattRammevedtak = testRapid.inspektør.message(0)
