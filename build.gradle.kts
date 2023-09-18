@@ -19,7 +19,7 @@ repositories {
 dependencies {
 
     // Kontrakter for dp-iverksett
-    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20230620164418_dc7edb7")
+    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20230918131641_895ac1a")
 
     implementation(libs.jackson.core)
     implementation(libs.jackson.datatype.jsr310)
