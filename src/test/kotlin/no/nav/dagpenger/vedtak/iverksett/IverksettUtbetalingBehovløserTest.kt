@@ -25,7 +25,7 @@ class IverksettUtbetalingBehovløserTest {
         val iverksettDtoSlot = slot<IverksettDto>()
         coEvery { iverksettClient.iverksett(capture(iverksettDtoSlot)) } just Runs
 
-        testRapid.sendTestMessage(behovOmIverksettingAvUtbetalingsvedtakUtenForrigeBehandlingId())
+        testRapid.sendTestMessage(behovOmIverksettingAvUtbetalingsvedtak())
 
         coVerify(exactly = 1) {
             iverksettClient.iverksett(any())
