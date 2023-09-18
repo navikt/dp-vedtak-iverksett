@@ -17,7 +17,7 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
     init {
         rapidsConnection.register(this)
 
-        IverksettBehovløser(
+        IverksettUtbetalingBehovløser(
             rapidsConnection = rapidsConnection,
             iverksettClient = IverksettClient(
                 Configuration.iverksettApiUrl,
