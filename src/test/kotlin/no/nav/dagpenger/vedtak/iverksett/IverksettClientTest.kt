@@ -7,6 +7,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
+import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
@@ -56,6 +57,7 @@ internal class IverksettClientTest {
         behandlingId = UUID.randomUUID(),
         personIdent = "12345678901",
         vedtak = VedtaksdetaljerDto(
+            vedtakstype = VedtakType.UTBETALINGSVEDTAK,
             vedtakstidspunkt = LocalDateTime.now(),
             resultat = Vedtaksresultat.INNVILGET,
             saksbehandlerId = "DIGIDAG",
