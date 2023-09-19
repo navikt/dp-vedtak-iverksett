@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.aktivitetslogg)
 
     // Kontrakter for dp-iverksett
     implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20230908143751_5a583dd")
