@@ -23,14 +23,7 @@ internal class IverksettClientTest {
 
     @Test
     fun `iverksett clienten svarer 202`() = runBlocking {
-        val mockEngine = MockEngine { request ->
-            request.headers[HttpHeaders.Accept] shouldBe "application/json"
-            request.headers[HttpHeaders.Authorization] shouldBe "Bearer ${tokenProvider.invoke()}"
-            respond(
-                content = "",
-                status = HttpStatusCode.Accepted,
-            )
-        }
+        val mockEngine = mockEngine(202)
         val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
         client.iverksett(
             iverksettDagpengerdDtoDummy(),
