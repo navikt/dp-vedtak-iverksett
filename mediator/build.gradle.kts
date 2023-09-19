@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    implementation(project(path = ":modell"))
     implementation(libs.aktivitetslogg)
 
     // Kontrakter for dp-iverksett

@@ -24,6 +24,23 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
                 Configuration.iverksettClientTokenSupplier,
             ),
         )
+
+//        HendelseMediator(
+//            rapidsConnection = rapidsConnection,
+//            hendelseRepository = PostgresHendelseRepository(PostgresDataSourceBuilder.dataSource),
+//            personMediator = PersonMediator(
+//                aktivitetsloggMediator = AktivitetsloggMediator(rapidsConnection),
+//                personRepository = personRepository,
+//                personObservers = listOf(
+//                    VedtakFattetObserver(rapidsConnection),
+//                ),
+//            ),
+//            iverksettingMediator = IverksettingMediator(
+//                aktivitetsloggMediator = AktivitetsloggMediator(rapidsConnection),
+//                iverksettingRepository = PostgresIverksettingRepository(PostgresDataSourceBuilder.dataSource),
+//                behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
+//            ),
+//        )
     }
 
     fun start() = rapidsConnection.start()
