@@ -1,6 +1,6 @@
-package no.nav.dagpenger.vedtak.iverksett.persistens
+package no.nav.dagpenger.vedtak.iverksett
 
-import no.nav.dagpenger.vedtak.iverksett.Iverksetting
+import no.nav.dagpenger.vedtak.iverksett.persistens.IverksettingRepository
 import java.util.UUID
 
 class InMemoryIverksettingRepository : IverksettingRepository {

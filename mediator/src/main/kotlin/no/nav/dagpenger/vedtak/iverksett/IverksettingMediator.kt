@@ -5,7 +5,6 @@ import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.IverksattHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
-import no.nav.dagpenger.vedtak.iverksett.mottak.VedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.IverksettingRepository
 import no.nav.helse.rapids_rivers.withMDC
 
@@ -52,13 +51,13 @@ internal class IverksettingMediator(
 
     private fun hentEllerOpprettIverksett(hendelse: Hendelse): Iverksetting {
         return when (hendelse) {
-            is VedtakFattetHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
+            is UtbetalingsvedtakFattetHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
                 ?: Iverksetting(hendelse.vedtakId, hendelse.ident())
             is IverksattHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
                 ?: throw OpprettIverksettingException("Kan ikke knytte iverksatthendelse til en Iverksetting")
 
             else -> {
-                TODO("Støtter bare VedtakFattetHendelse pt")
+                TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")
             }
         }
     }

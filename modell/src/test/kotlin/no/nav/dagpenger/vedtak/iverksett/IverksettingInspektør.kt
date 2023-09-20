@@ -23,4 +23,8 @@ internal class IverksettingInspektør(iverksetting: Iverksetting) : Iverksetting
         this.vedtakId = vedtakId
         this.tilstand = tilstand
     }
+
+//    override fun postVisitAktivitetslogg(aktivitetslogg: Aktivitetslogg) {
+//       // this.innsendingLogg = aktivitetslogg
+//    }
 }
