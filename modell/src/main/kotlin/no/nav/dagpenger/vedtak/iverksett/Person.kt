@@ -2,8 +2,10 @@ package no.nav.dagpenger.vedtak.iverksett
 
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
+import no.nav.dagpenger.vedtak.iverksett.Sak.Companion.finnSak
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.PersonVisitor
 import java.time.LocalDate
 
@@ -44,11 +46,17 @@ class Person internal constructor(
 
     fun ident() = ident
 
-//  TODO  private fun finnEllerOpprettSak(rettighetBehandletHendelse: RettighetBehandletHendelse) =
-//        saker.finnSak(rettighetBehandletHendelse.sakId) ?: Sak(
-//            rettighetBehandletHendelse.sakId,
-//            this,
-//        )
+    fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
+        kontekst(utbetalingsvedtakFattetHendelse)
+        val sak = finnEllerOpprettSak(utbetalingsvedtakFattetHendelse)
+        sak.håndter(utbetalingsvedtakFattetHendelse)
+    }
+
+    private fun finnEllerOpprettSak(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) =
+        saker.finnSak(utbetalingsvedtakFattetHendelse.sakId) ?: Sak(
+            utbetalingsvedtakFattetHendelse.sakId,
+            this,
+        )
 
     fun beløpTilUtbetalingFor(dato: LocalDate): Beløp = iverksettingHistorikk.beløpTilUtbetalingFor(dato)
 

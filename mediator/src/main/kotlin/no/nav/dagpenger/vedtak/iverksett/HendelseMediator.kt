@@ -14,7 +14,7 @@ import no.nav.helse.rapids_rivers.RapidsConnection
 
 internal class HendelseMediator(
     rapidsConnection: RapidsConnection,
-    // private val personMediator: PersonMediator, //TODO
+    private val personMediator: PersonMediator,
     private val iverksettingMediator: IverksettingMediator,
     private val hendelseRepository: HendelseRepository,
 ) : IHendelseMediator {

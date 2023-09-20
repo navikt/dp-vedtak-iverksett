@@ -23,7 +23,7 @@ internal class IverksettingMediatorTest {
         HendelseMediator(
             rapidsConnection = testRapid,
             hendelseRepository = InMemoryMeldingRepository(),
-//            personMediator = PersonMediator(mockk(), mockk()), //TODO
+            personMediator = PersonMediator(mockk(), mockk()),
             iverksettingMediator = IverksettingMediator(
                 aktivitetsloggMediator = mockk(relaxed = true),
                 iverksettingRepository = iverksettingRepository,

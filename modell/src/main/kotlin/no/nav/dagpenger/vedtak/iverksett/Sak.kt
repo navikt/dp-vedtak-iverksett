@@ -3,6 +3,7 @@ package no.nav.dagpenger.vedtak.iverksett
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 
 typealias SakId = String
@@ -30,12 +31,12 @@ class Sak private constructor(
         sakVisitor.visitSak(sakId)
     }
 
-// TODO    fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
-//        kontekst(utbetalingsvedtakFattetHendelse)
-//        val iverksetting = Iverksetting()
-//        iverksettinger.add(iverksetting)
-//        iverksetting.håndter(utbetalingsvedtakFattetHendelse)
-//    }
+    fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
+        kontekst(utbetalingsvedtakFattetHendelse)
+        val iverksetting = utbetalingsvedtakFattetHendelse.tilIverksetting()
+        iverksettinger.add(iverksetting)
+        person.leggTilIverksetting(iverksetting)
+    }
 
     private fun kontekst(hendelse: Hendelse) {
         hendelse.kontekst(this)

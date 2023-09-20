@@ -29,12 +29,12 @@ class IverksettingHistorikk internal constructor(private val iverksettinger: Mut
     fun beløpTilUtbetalingFor(dato: LocalDate): Beløp = beløpTilUtbetalingHistorikk.get(dato)
 
     internal fun leggTilIverksetting(iverksetting: Iverksetting) {
-//  TODO      this.iverksettinger.add(
-//            iverksettinger.also {
-//                HistorikkOppdaterer(this).apply(it::accept)
-//            },
-//        )
-//        this.observers.forEach { iverksettingObserver ->
+        this.iverksettinger.add(
+            iverksetting.also {
+                HistorikkOppdaterer(this).apply(it::accept)
+            },
+        )
+//  TODO?      this.observers.forEach { iverksettingObserver ->
 //            iverksettingObserver.utbetalingsvedtakIverksatt().apply(iverksettinger::accept).utbetalingsvedtakIverksatt
 //
 //        }
@@ -48,14 +48,14 @@ class IverksettingHistorikk internal constructor(private val iverksettinger: Mut
 
         private fun dato() = requireNotNull(dato) { " Forventet at dato er satt. Har du husket preVisit???" }
 
-        // override TODO
-        fun visitIverksettingDag(
-            iverksettingId: UUID,
-            vedtakId: UUID,
-            personIdent: PersonIdentifikator,
-            dato: LocalDate,
-        ) {
-            // iverksettingHistorikk.beløpTilUtbetalingHistorikk.put(dato, beløpTilUtbetaling)
-        }
+//TODO
+//        override fun visitIverksettingDag(
+//            iverksettingId: UUID,
+//            vedtakId: UUID,
+//            personIdent: PersonIdentifikator,
+//            dato: LocalDate,
+//        ) {
+//            // iverksettingHistorikk.beløpTilUtbetalingHistorikk.put(dato, beløpTilUtbetaling)
+//        }
     }
 }

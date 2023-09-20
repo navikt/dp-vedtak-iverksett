@@ -19,9 +19,9 @@ internal class IverksettingMediator(
         val sikkerLogger = KotlinLogging.logger("tjenestekall.IverksettingMediator")
     }
 
-    fun håndter(hendelse: UtbetalingsvedtakFattetHendelse) {
-        håndter(hendelse) { iverksetting ->
-            iverksetting.håndter(hendelse)
+    fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
+        håndter(utbetalingsvedtakFattetHendelse) { iverksetting ->
+            iverksetting.håndter(utbetalingsvedtakFattetHendelse)
         }
     }
 
