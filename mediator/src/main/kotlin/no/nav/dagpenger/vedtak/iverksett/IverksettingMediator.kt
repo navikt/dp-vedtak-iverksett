@@ -32,7 +32,7 @@ internal class IverksettingMediator(
     }
 
     private fun håndter(hendelse: Hendelse, håndter: (Iverksetting) -> Unit) = try {
-        val iverksetting = hentEllerOpprettIverksett(hendelse)
+        val iverksetting = hentEllerOpprettIverksetting(hendelse)
         håndter(iverksetting)
         iverksettingRepository.lagre(iverksetting)
         ferdigstill(hendelse)
@@ -49,7 +49,7 @@ internal class IverksettingMediator(
         throw e
     }
 
-    private fun hentEllerOpprettIverksett(hendelse: Hendelse): Iverksetting {
+    private fun hentEllerOpprettIverksetting(hendelse: Hendelse): Iverksetting {
         return when (hendelse) {
             is UtbetalingsvedtakFattetHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
                 ?: Iverksetting(hendelse.vedtakId, hendelse.ident())

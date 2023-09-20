@@ -6,6 +6,7 @@ import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPerson
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.IverksattHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
+import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.util.UUID
 
 class Iverksetting private constructor(

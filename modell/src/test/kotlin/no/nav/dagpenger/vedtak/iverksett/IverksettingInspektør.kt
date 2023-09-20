@@ -1,5 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.util.UUID
 
 internal class IverksettingInspektør(iverksetting: Iverksetting) : IverksettingVisitor {
