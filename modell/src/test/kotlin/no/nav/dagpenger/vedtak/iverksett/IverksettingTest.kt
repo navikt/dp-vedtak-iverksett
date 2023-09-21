@@ -22,7 +22,7 @@ internal class IverksettingTest {
 
     @BeforeEach
     fun setup() {
-        iverksetting = Iverksetting(vedtakId, ident)
+        iverksetting = Iverksetting(vedtakId, ident, mutableListOf())
     }
 
     @Test

@@ -2,6 +2,8 @@ package no.nav.dagpenger.vedtak.iverksett.hendelser
 
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
+import no.nav.dagpenger.vedtak.iverksett.IverksettingDag
+import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -19,7 +21,9 @@ class UtbetalingsvedtakFattetHendelse(
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
 
-    fun tilIverksetting(): Iverksetting = Iverksetting(vedtakId, ident())
+    fun tilIverksetting(): Iverksetting = Iverksetting(vedtakId, ident(), tilIverksettingsdager(utbetalingsdager))
+    fun tilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
+        utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp.fra(it.beløp.toBigDecimal())) }.toMutableList()
 
     data class Utbetalingsdag(val dato: LocalDate, val beløp: Double)
     enum class Utfall {

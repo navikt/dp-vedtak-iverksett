@@ -2,6 +2,7 @@ package no.nav.dagpenger.vedtak.iverksett
 
 import mu.KotlinLogging
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
+import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.IverksettingRepository
@@ -45,7 +46,7 @@ internal class IverksettingMediator(
     private fun hentEllerOpprettIverksetting(hendelse: Hendelse): Iverksetting {
         return when (hendelse) {
             is UtbetalingsvedtakFattetHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
-                ?: Iverksetting(hendelse.vedtakId, hendelse.ident())
+                ?: Iverksetting(hendelse.vedtakId, hendelse.ident(), hendelse.utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp.fra(it.beløp.toBigDecimal())) }.toMutableList())
 
             else -> {
                 TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")
