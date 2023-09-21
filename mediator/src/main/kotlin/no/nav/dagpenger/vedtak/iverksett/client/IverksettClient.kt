@@ -1,4 +1,4 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
+import no.nav.dagpenger.vedtak.iverksett.Configuration
 import org.slf4j.MDC
 
 internal class IverksettClient(

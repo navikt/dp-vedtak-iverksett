@@ -1,4 +1,4 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client
 
 import io.kotest.matchers.shouldBe
 import io.ktor.client.engine.mock.MockEngine

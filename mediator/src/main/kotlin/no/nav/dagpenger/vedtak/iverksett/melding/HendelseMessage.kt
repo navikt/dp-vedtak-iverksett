@@ -1,7 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett.melding
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.dagpenger.vedtak.iverksett.HendelseMediator
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.asLocalDateTime

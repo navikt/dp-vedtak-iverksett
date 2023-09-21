@@ -1,4 +1,4 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client
 
 import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto

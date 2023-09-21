@@ -1,7 +1,7 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.melding
 
+import no.nav.dagpenger.vedtak.iverksett.IverksettingMediator
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
-import no.nav.dagpenger.vedtak.iverksett.melding.HendelseRepository
 import no.nav.dagpenger.vedtak.iverksett.mottak.UtbetalingsvedtakFattetHendelseMessage
 import no.nav.dagpenger.vedtak.iverksett.mottak.UtbetalingsvedtakFattetMottak
 import no.nav.helse.rapids_rivers.RapidsConnection
