@@ -5,7 +5,6 @@ import no.nav.dagpenger.vedtak.iverksett.entitet.TemporalCollection
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingHistorikkVisitor
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.time.LocalDate
-import java.util.UUID
 
 class IverksettingHistorikk internal constructor(private val iverksettinger: MutableList<Iverksetting>) {
 
@@ -48,7 +47,7 @@ class IverksettingHistorikk internal constructor(private val iverksettinger: Mut
 
         private fun dato() = requireNotNull(dato) { " Forventet at dato er satt. Har du husket preVisit???" }
 
-//TODO
+// TODO
 //        override fun visitIverksettingDag(
 //            iverksettingId: UUID,
 //            vedtakId: UUID,

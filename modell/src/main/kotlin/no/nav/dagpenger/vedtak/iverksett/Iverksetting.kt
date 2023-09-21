@@ -9,7 +9,7 @@ import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendel
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.util.UUID
 
-//TODO Iverksetting må ha ha en liste med iverksettingsdager
+// TODO Iverksetting må ha ha en liste med iverksettingsdager
 class Iverksetting private constructor(
     val id: UUID,
     private val personIdent: PersonIdentifikator,
