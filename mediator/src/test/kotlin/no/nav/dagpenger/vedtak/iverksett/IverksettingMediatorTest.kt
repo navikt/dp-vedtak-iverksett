@@ -6,6 +6,7 @@ import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
 import mu.KotlinLogging
 import no.nav.dagpenger.vedtak.iverksett.db.InMemoryMeldingRepository
+import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryIverksettingRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
