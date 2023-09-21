@@ -1,7 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett.melding
 
 import com.fasterxml.jackson.databind.JsonNode
-import no.nav.dagpenger.vedtak.iverksett.IHendelseMediator
+import no.nav.dagpenger.vedtak.iverksett.HendelseMediator
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.asLocalDateTime
@@ -20,7 +20,7 @@ internal abstract class HendelseMessage(private val packet: JsonMessage) {
     internal open val skalDuplikatsjekkes = true
     protected abstract val ident: String
 
-    internal abstract fun behandle(mediator: IHendelseMediator, context: MessageContext)
+    internal abstract fun behandle(mediator: HendelseMediator, context: MessageContext)
 
     internal fun lagreMelding(repository: HendelseRepository) {
         repository.lagreMelding(this, ident, id, toJson())

@@ -3,7 +3,6 @@ package no.nav.dagpenger.vedtak.iverksett
 import mu.KotlinLogging
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
-import no.nav.dagpenger.vedtak.iverksett.hendelser.IverksattHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.IverksettingRepository
 import no.nav.helse.rapids_rivers.withMDC
@@ -22,12 +21,6 @@ internal class IverksettingMediator(
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
         håndter(utbetalingsvedtakFattetHendelse) { iverksetting ->
             iverksetting.håndter(utbetalingsvedtakFattetHendelse)
-        }
-    }
-
-    fun håndter(iverksattHendelse: IverksattHendelse) {
-        håndter(iverksattHendelse) { iverksetting ->
-            iverksetting.håndter(iverksattHendelse)
         }
     }
 
@@ -53,8 +46,6 @@ internal class IverksettingMediator(
         return when (hendelse) {
             is UtbetalingsvedtakFattetHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
                 ?: Iverksetting(hendelse.vedtakId, hendelse.ident())
-            is IverksattHendelse -> iverksettingRepository.hent(hendelse.vedtakId)
-                ?: throw OpprettIverksettingException("Kan ikke knytte iverksatthendelse til en Iverksetting")
 
             else -> {
                 TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")

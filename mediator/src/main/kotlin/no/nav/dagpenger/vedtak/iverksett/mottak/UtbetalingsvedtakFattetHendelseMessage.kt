@@ -1,13 +1,23 @@
 package no.nav.dagpenger.vedtak.iverksett.mottak
 
-import no.nav.dagpenger.vedtak.iverksett.IHendelseMediator
+import no.nav.dagpenger.vedtak.iverksett.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
+import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMessage
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.asLocalDate
+import no.nav.helse.rapids_rivers.asLocalDateTime
 
-internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMessage) :
-    VedtakFattetHendelseMessage(packet) {
+internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMessage) : HendelseMessage(packet) {
+
+    override val ident: String
+        get() = packet["ident"].asText()
+
+    private val vedtakId = packet["vedtakId"].asUUID()
+    private val behandlingId = packet["behandlingId"].asUUID()
+    private val sakId = packet["sakId"].asText()
+    private val vedtakstidspunkt = packet["vedtaktidspunkt"].asLocalDateTime()
+    private val virkningsdato = packet["virkningsdato"].asLocalDate()
 
     private val hendelse: UtbetalingsvedtakFattetHendelse
         get() = UtbetalingsvedtakFattetHendelse(
@@ -35,7 +45,7 @@ internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMe
         )
     }.toList()
 
-    override fun behandle(mediator: IHendelseMediator, context: MessageContext) {
-        mediator.behandle(hendelse, this, context)
+    override fun behandle(mediator: HendelseMediator, context: MessageContext) {
+        mediator.behandle(hendelse, this)
     }
 }

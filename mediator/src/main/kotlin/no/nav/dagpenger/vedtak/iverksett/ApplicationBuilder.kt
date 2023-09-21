@@ -1,6 +1,8 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import mu.KotlinLogging
+import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryIverksettingRepository
+import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 
@@ -17,23 +19,15 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
     init {
         rapidsConnection.register(this)
 
-        IverksettUtbetalingBehovløser(
+        HendelseMediator(
             rapidsConnection = rapidsConnection,
-            iverksettClient = IverksettClient(
-                Configuration.iverksettApiUrl,
-                Configuration.iverksettClientTokenSupplier,
+            hendelseRepository = InMemoryMeldingRepository(),
+            iverksettingMediator = IverksettingMediator(
+                aktivitetsloggMediator = AktivitetsloggMediator(rapidsConnection),
+                iverksettingRepository = InMemoryIverksettingRepository(),
+                behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
             ),
         )
-
-//        HendelseMediator(
-//            rapidsConnection = rapidsConnection,
-//            hendelseRepository = InMemoryMeldingRepository(),
-//            iverksettingMediator = IverksettingMediator(
-//                aktivitetsloggMediator = AktivitetsloggMediator(rapidsConnection),
-//                iverksettingRepository = PostgresIverksettingRepository(PostgresDataSourceBuilder.dataSource),
-//                behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
-//            ),
-//        )
     }
 
     fun start() = rapidsConnection.start()

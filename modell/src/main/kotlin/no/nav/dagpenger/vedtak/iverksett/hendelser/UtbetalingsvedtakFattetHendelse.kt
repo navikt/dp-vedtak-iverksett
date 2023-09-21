@@ -9,15 +9,15 @@ import java.util.UUID
 class UtbetalingsvedtakFattetHendelse(
     meldingsreferanseId: UUID,
     ident: String,
-    vedtakId: UUID,
-    behandlingId: UUID,
-    sakId: String,
+    val vedtakId: UUID,
+    val behandlingId: UUID,
+    val sakId: String,
     val vedtakstidspunkt: LocalDateTime,
     val virkningsdato: LocalDate,
     val utbetalingsdager: List<Utbetalingsdag>,
     val utfall: Utfall,
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
-) : VedtakFattetHendelse(meldingsreferanseId, ident, vedtakId, behandlingId, sakId, aktivitetslogg) {
+) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
 
     fun tilIverksetting(): Iverksetting = Iverksetting(vedtakId, ident())
 
@@ -26,4 +26,7 @@ class UtbetalingsvedtakFattetHendelse(
         Innvilget,
         Avslått,
     }
+
+    override fun kontekstMap(): Map<String, String> =
+        mapOf("vedtakId" to vedtakId.toString(), "behandlingId" to behandlingId.toString())
 }

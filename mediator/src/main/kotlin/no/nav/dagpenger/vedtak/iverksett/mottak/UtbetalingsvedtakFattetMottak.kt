@@ -2,7 +2,7 @@ package no.nav.dagpenger.vedtak.iverksett.mottak
 
 import mu.KotlinLogging
 import mu.withLoggingContext
-import no.nav.dagpenger.vedtak.iverksett.IHendelseMediator
+import no.nav.dagpenger.vedtak.iverksett.HendelseMediator
 import no.nav.helse.rapids_rivers.JsonMessage
 import no.nav.helse.rapids_rivers.MessageContext
 import no.nav.helse.rapids_rivers.RapidsConnection
@@ -10,7 +10,7 @@ import no.nav.helse.rapids_rivers.River
 
 internal class UtbetalingsvedtakFattetMottak(
     rapidsConnection: RapidsConnection,
-    private val hendelseMediator: IHendelseMediator,
+    private val hendelseMediator: HendelseMediator,
 ) : River.PacketListener {
 
     private companion object {
