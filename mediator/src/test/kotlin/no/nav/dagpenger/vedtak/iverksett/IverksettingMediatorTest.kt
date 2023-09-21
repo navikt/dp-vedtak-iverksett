@@ -5,7 +5,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
 import mu.KotlinLogging
-import no.nav.dagpenger.vedtak.iverksett.db.InMemoryMeldingRepository
+import no.nav.dagpenger.vedtak.iverksett.db.InMemoryMeldingTestRepository
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryIverksettingRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
@@ -23,7 +23,7 @@ internal class IverksettingMediatorTest {
     init {
         HendelseMediator(
             rapidsConnection = testRapid,
-            hendelseRepository = InMemoryMeldingRepository(),
+            hendelseRepository = InMemoryMeldingTestRepository(),
             iverksettingMediator = IverksettingMediator(
                 aktivitetsloggMediator = mockk(relaxed = true),
                 iverksettingRepository = iverksettingRepository,

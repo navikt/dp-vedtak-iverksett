@@ -4,7 +4,7 @@ import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMessage
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseRepository
 import java.util.UUID
 
-internal class InMemoryMeldingRepository : HendelseRepository {
+internal class InMemoryMeldingTestRepository : HendelseRepository {
 
     private val meldingDb = mutableMapOf<UUID, MeldingDto>()
     override fun lagreMelding(hendelseMessage: HendelseMessage, ident: String, id: UUID, toJson: String) {
