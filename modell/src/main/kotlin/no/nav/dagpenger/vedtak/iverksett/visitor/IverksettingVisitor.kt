@@ -5,6 +5,5 @@ import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import java.util.UUID
 
 interface IverksettingVisitor : AktivitetsloggVisitor {
-
     fun visitIverksetting(id: UUID, vedtakId: UUID, personIdent: PersonIdentifikator) {}
 }

@@ -34,7 +34,7 @@ class SakMediator(private val sakRepository: SakRepository) {
             is UtbetalingsvedtakFattetHendelse -> sakRepository.hent(hendelse.sakId)
                 ?: Sak(
                     ident = PersonIdentifikator(hendelse.ident()),
-                    sakId = hendelse.sakId,
+                    sakId = SakId(hendelse.sakId),
                     iverksettingHistorikk = IverksettingHistorikk(),
                 )
 
