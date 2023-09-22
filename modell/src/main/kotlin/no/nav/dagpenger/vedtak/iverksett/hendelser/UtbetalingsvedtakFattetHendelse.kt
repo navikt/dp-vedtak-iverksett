@@ -21,8 +21,8 @@ class UtbetalingsvedtakFattetHendelse(
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
 
-    fun tilIverksetting(): Iverksetting = Iverksetting(vedtakId, ident(), tilIverksettingsdager(utbetalingsdager))
-    fun tilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
+    fun mapTilIverksetting(): Iverksetting = Iverksetting(vedtakId, ident(), mapTilIverksettingsdager(utbetalingsdager))
+    fun mapTilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
         utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp.fra(it.beløp.toBigDecimal())) }.toMutableList()
 
     data class Utbetalingsdag(val dato: LocalDate, val beløp: Double)

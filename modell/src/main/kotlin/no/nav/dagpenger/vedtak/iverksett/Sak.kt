@@ -9,7 +9,13 @@ class Sak(
 ) {
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
         // kontekst(utbetalingsvedtakFattetHendelse)
-        val iverksetting = utbetalingsvedtakFattetHendelse.tilIverksetting()
+
+// TDOD duplikatkontroll
+
+        val iverksetting = utbetalingsvedtakFattetHendelse.mapTilIverksetting()
+
+        utbetalingsvedtakFattetHendelse.info("Mottatt hendelse om fattet utbetalingsvedtak.")
+        // this.leggTilIverksetting(iverksetting)
 
         TODO("Gjør noe fornuftig")
     }
