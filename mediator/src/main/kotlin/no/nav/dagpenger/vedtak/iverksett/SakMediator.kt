@@ -17,6 +17,7 @@ class SakMediator(private val sakRepository: SakRepository) {
         håndter(sak)
         sakRepository.lagre(sak)
     } catch (err: Aktivitetslogg.AktivitetException) {
+        println("Oups aktivitetException! Feil ved håndtering av hendelse")
 //        SakMediator.logger.error("alvorlig feil i aktivitetslogg (se sikkerlogg for detaljer)")
 //        withMDC(err.kontekst()) {
 //            IverksettingMediator.sikkerLogger.error("alvorlig feil i aktivitetslogg: ${err.message}", err)
@@ -24,6 +25,7 @@ class SakMediator(private val sakRepository: SakRepository) {
         throw err
     } catch (e: Exception) {
 //        errorHandler(e, e.message ?: "Ukjent feil")
+        println("Oups exception! Feil ved håndtering av hendelse")
         throw e
     }
 
