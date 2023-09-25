@@ -41,7 +41,6 @@ class SakTest {
             }
             sakInspektør.iverksettinger.first().iverksettingsdager.forEach { iverksettingDag ->
                 when (iverksettingDag.dato.dayOfWeek) {
-
                     DayOfWeek.MONDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
                     DayOfWeek.TUESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
                     DayOfWeek.WEDNESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
