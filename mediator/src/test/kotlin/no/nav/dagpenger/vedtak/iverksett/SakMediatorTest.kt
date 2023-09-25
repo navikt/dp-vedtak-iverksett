@@ -33,9 +33,9 @@ class SakMediatorTest {
 
     @Test
     fun `Utbetalingsvedtak fattet hendelse fører til iverksetting, samt hendelse om iverksatt vedtak`() {
-        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident, vedtakId, behandlingId = UUID.randomUUID(), sakId))
+        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, vedtakId = vedtakId, behandlingId = UUID.randomUUID(), sakId = SakId(sakId)))
         // assert at vi får 202 fra iverksetting
-        sakRepository.hent(sakId) shouldNotBe null
+        sakRepository.hent(SakId(sakId)) shouldNotBe null
         assertSoftly {
             // TODO:
             // testRapid.inspektør.size shouldBe 1

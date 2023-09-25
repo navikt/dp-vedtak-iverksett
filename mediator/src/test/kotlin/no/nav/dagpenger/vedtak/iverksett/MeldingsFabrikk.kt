@@ -3,7 +3,7 @@ package no.nav.dagpenger.vedtak.iverksett
 import java.time.LocalDateTime
 import java.util.UUID
 
-internal fun utbetalingsvedtakFattet(ident: String, vedtakId: UUID, behandlingId: UUID, sakId: String) =
+internal fun utbetalingsvedtakFattet(ident: String, vedtakId: UUID, behandlingId: UUID, sakId: SakId) =
     //language=JSON
     """
         {

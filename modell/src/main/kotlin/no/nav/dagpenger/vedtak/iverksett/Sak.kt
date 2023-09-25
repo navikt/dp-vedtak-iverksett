@@ -20,4 +20,6 @@ class Sak(
         utbetalingsvedtakFattetHendelse.info("Mottatt hendelse om fattet utbetalingsvedtak.")
         iverksettingHistorikk.håndter(utbetalingsvedtakFattetHendelse)
     }
+
+    fun sakId() = sakId
 }

@@ -31,7 +31,7 @@ class SakMediator(private val sakRepository: SakRepository) {
 
     private fun hentEllerOpprettSak(hendelse: Hendelse): Sak {
         return when (hendelse) {
-            is UtbetalingsvedtakFattetHendelse -> sakRepository.hent(hendelse.sakId)
+            is UtbetalingsvedtakFattetHendelse -> sakRepository.hent(SakId(hendelse.sakId))
                 ?: Sak(
                     ident = PersonIdentifikator(hendelse.ident()),
                     sakId = SakId(hendelse.sakId),

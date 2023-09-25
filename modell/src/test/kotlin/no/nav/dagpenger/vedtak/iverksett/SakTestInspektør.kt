@@ -8,7 +8,7 @@ internal class SakTestInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    lateinit var iverksettinger: MutableList<Iverksetting>
+    val iverksettinger = mutableListOf<Iverksetting>()
     lateinit var ident: PersonIdentifikator
     lateinit var sakId: SakId
 
