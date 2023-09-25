@@ -1,7 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
-import no.nav.dagpenger.vedtak.iverksett.entitet.TemporalCollection
+import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp.Companion.beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingHistorikkVisitor
 import java.time.LocalDate
@@ -14,35 +14,24 @@ class IverksettingHistorikk(private val iverksettinger: MutableList<Iverksetting
         visitAlleIverksettinger(visitor)
     }
 
-    private val beløpTilUtbetalingHistorikk = TemporalCollection<Beløp>()
+    private val beløpTilUtbetalingForDag = mutableMapOf<LocalDate, Beløp>()
 
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
         this.iverksettinger.add(
             utbetalingsvedtakFattetHendelse.mapTilIverksetting().also { iverksetting ->
                 iverksetting.iverksettingsdager.forEach { iverksettingDag ->
-                    beløpTilUtbetalingHistorikk.put(iverksettingDag.dato, iverksettingDag.beløp)
+                    beløpTilUtbetalingForDag.put(iverksettingDag.dato, iverksettingDag.beløp)
                 }
             },
         )
     }
 
-    fun beløpTilUtbetalingFor(dato: LocalDate): Beløp {
-        if (beløpTilUtbetalingHistorikk.harHistorikk()) {
-            var sisteDato: LocalDate = LocalDate.MIN
-            this.iverksettinger.forEach { iverksetting ->
-                iverksetting.iverksettingsdager.forEach { dag ->
-                    if (sisteDato < dag.dato) {
-                        sisteDato = dag.dato
-                    }
-                }
-            }
-            if (sisteDato > LocalDate.MIN) {
-                return beløpTilUtbetalingHistorikk.get(dato)
-            } else {
-                throw IllegalArgumentException("Iverksettingshistorikken har ingen utbetaling for dato $dato")
-            }
+    fun beløpTilUtbetalingForDag(dato: LocalDate): Beløp {
+        val beløp: Beløp? = beløpTilUtbetalingForDag.get(dato)
+        if (beløp != null) {
+            return beløp
         } else {
-            throw IllegalArgumentException("Det finnes ingen iverksettinger ennå")
+            throw IllegalArgumentException("Det finnes ingen iverksetting med dato $dato")
         }
     }
 

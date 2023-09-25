@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
@@ -40,13 +41,17 @@ class SakTest {
             }
             sakInspektør.iverksettinger.first().iverksettingsdager.forEach { iverksettingDag ->
                 when (iverksettingDag.dato.dayOfWeek) {
-                    DayOfWeek.MONDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.TUESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.WEDNESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.THURSDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.FRIDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.SATURDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 0.beløp
-                    DayOfWeek.SUNDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingFor(iverksettingDag.dato) shouldBe 0.beløp
+
+                    DayOfWeek.MONDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
+                    DayOfWeek.TUESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
+                    DayOfWeek.WEDNESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
+                    DayOfWeek.THURSDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
+                    DayOfWeek.FRIDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
+                    DayOfWeek.SATURDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 0.beløp
+                    DayOfWeek.SUNDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 0.beløp
+                }
+                shouldThrow<IllegalArgumentException> {
+                    sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(virkningsdatoErSøndag.plusDays(1))
                 }
             }
         }
