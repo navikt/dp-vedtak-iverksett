@@ -7,6 +7,7 @@ import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingHistorikkVisitor
 
 class IverksettingHistorikk(private val iverksettinger: MutableList<Iverksetting>) {
     fun accept(visitor: IverksettingHistorikkVisitor) {
+        visitor.visitIverksettingHistorikk(iverksettinger)
         visitAlleIverksettinger(visitor)
     }
 

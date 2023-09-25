@@ -4,13 +4,13 @@ import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 
 internal class SakTestInspektør(sak: Sak) : SakVisitor {
 
-    init {
-        sak.accept(this)
-    }
-
     val iverksettinger = mutableListOf<Iverksetting>()
     lateinit var ident: PersonIdentifikator
     lateinit var sakId: SakId
+
+    init {
+        sak.accept(this)
+    }
 
     override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
         this.ident = ident
@@ -18,7 +18,8 @@ internal class SakTestInspektør(sak: Sak) : SakVisitor {
     }
 
     override fun visitIverksettingHistorikk(iverksettinger: MutableList<Iverksetting>) {
-        this.iverksettinger.addAll(iverksettinger)
-        println("Halla! Nå er vi i iverksettingHistorikk")
+        iverksettinger.forEach { iverksetting ->
+            this.iverksettinger.add(iverksetting)
+        }
     }
 }
