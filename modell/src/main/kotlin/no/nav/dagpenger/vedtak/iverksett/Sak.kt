@@ -13,6 +13,7 @@ class Sak(
 
     fun accept(visitor: SakVisitor) {
         visitor.visitSak(ident, sakId)
+        visitor.visitSak(iverksettingHistorikk)
         iverksettingHistorikk.accept(visitor)
     }
 

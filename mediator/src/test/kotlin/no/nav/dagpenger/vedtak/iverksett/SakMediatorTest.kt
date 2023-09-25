@@ -1,6 +1,5 @@
 package no.nav.dagpenger.vedtak.iverksett
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
@@ -32,14 +31,8 @@ class SakMediatorTest {
     }
 
     @Test
-    fun `Utbetalingsvedtak fattet hendelse fører til iverksetting, samt hendelse om iverksatt vedtak`() {
+    fun `Utbetalingsvedtak fattet hendelse fører til iverksetting`() {
         testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, vedtakId = vedtakId, behandlingId = UUID.randomUUID(), sakId = SakId(sakId)))
-        // assert at vi får 202 fra iverksetting
         sakRepository.hent(SakId(sakId)) shouldNotBe null
-        assertSoftly {
-            // TODO:
-            // testRapid.inspektør.size shouldBe 1
-            // assert på at vi har sendt ut en hendelse om iverksatt vedtak
-        }
     }
 }

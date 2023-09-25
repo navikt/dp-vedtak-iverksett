@@ -11,21 +11,23 @@ import java.time.LocalDate
 import java.util.UUID
 
 class Iverksetting private constructor(
-    val id: UUID,
+    private val id: UUID,
     private val personIdent: PersonIdentifikator,
-    val vedtakId: UUID,
-    private val iverksettingsdager: MutableList<IverksettingDag>,
+    private val vedtakId: UUID,
+    private val virkningsdato: LocalDate,
+    internal val iverksettingsdager: MutableList<IverksettingDag>,
 ) : Aktivitetskontekst {
 
-    constructor(vedtakId: UUID, ident: String, iverksettingsdager: MutableList<IverksettingDag>) : this(
+    constructor(vedtakId: UUID, ident: String, virkningsdato: LocalDate, iverksettingsdager: MutableList<IverksettingDag>) : this(
         id = UUID.randomUUID(),
         personIdent = ident.tilPersonIdentfikator(),
         vedtakId = vedtakId,
+        virkningsdato = virkningsdato,
         iverksettingsdager = iverksettingsdager,
     )
 
     fun accept(iverksettingVisitor: IverksettingVisitor) {
-        iverksettingVisitor.visitIverksetting(id, vedtakId, personIdent)
+        iverksettingVisitor.visitIverksetting(id, vedtakId, personIdent, virkningsdato)
     }
 
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
@@ -40,6 +42,7 @@ class Iverksetting private constructor(
             mapOf(
                 "iverksettingId" to id.toString(),
                 "vedtakId" to vedtakId.toString(),
+                "virkningsdato" to virkningsdato.toString(),
                 "ident" to personIdent.identifikator(),
             ),
         )
@@ -50,4 +53,5 @@ class Iverksetting private constructor(
     }
 }
 
-class IverksettingDag(private val dato: LocalDate, private val beløp: Beløp)
+// TODO set private og bruk visitor??
+class IverksettingDag(internal val dato: LocalDate, internal val beløp: Beløp)

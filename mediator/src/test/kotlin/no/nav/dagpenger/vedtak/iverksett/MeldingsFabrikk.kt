@@ -12,8 +12,8 @@ internal fun utbetalingsvedtakFattet(ident: String, vedtakId: UUID, behandlingId
           "behandlingId": "$behandlingId",
           "sakId": "$sakId",
           "vedtakId": "$vedtakId",
-          "vedtaktidspunkt": "${LocalDateTime.MAX}",
-          "virkningsdato": "${11 juni 2023}",
+          "vedtaktidspunkt": "${LocalDateTime.now()}",
+          "virkningsdato": "2023-06-11",
           "utbetalingsdager": [
             {
               "dato": "2023-05-29",
