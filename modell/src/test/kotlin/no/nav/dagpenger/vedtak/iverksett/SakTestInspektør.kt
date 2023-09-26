@@ -19,9 +19,8 @@ internal class SakTestInspektør(sak: Sak) : SakVisitor {
         this.iverksettingHistorikk = iverksettingHistorikk
     }
 
-    override fun visit(iverksettinger: MutableList<Iverksetting>) {
+    override fun visitIverksettingHistorikk(iverksettinger: MutableList<Iverksetting>) =
         iverksettinger.forEach { iverksetting ->
             this.iverksettinger.add(iverksetting)
         }
-    }
 }
