@@ -5,6 +5,5 @@ import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import no.nav.dagpenger.vedtak.iverksett.SakId
 
 interface SakVisitor : IverksettingHistorikkVisitor {
-    fun visitSak(ident: PersonIdentifikator, sakId: SakId) {}
-    fun visitSak(iverksettingHistorikk: IverksettingHistorikk) {}
+    fun visitSak(ident: PersonIdentifikator, sakId: SakId, iverksettingHistorikk: IverksettingHistorikk) {}
 }

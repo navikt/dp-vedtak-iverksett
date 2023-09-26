@@ -13,16 +13,13 @@ internal class SakTestInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
+    override fun visitSak(ident: PersonIdentifikator, sakId: SakId, iverksettingHistorikk: IverksettingHistorikk) {
         this.ident = ident
         this.sakId = sakId
-    }
-
-    override fun visitSak(iverksettingHistorikk: IverksettingHistorikk) {
         this.iverksettingHistorikk = iverksettingHistorikk
     }
 
-    override fun visitIverksettingHistorikk(iverksettinger: MutableList<Iverksetting>) {
+    override fun visit(iverksettinger: MutableList<Iverksetting>) {
         iverksettinger.forEach { iverksetting ->
             this.iverksettinger.add(iverksetting)
         }
