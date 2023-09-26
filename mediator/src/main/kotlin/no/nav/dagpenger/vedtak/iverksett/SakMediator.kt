@@ -35,7 +35,7 @@ class SakMediator(private val sakRepository: SakRepository) {
                 ?: Sak(
                     ident = PersonIdentifikator(hendelse.ident()),
                     sakId = SakId(hendelse.sakId),
-                    iverksettingHistorikk = IverksettingHistorikk(),
+                    iverksettinger = mutableListOf(),
                 )
 
             else -> {

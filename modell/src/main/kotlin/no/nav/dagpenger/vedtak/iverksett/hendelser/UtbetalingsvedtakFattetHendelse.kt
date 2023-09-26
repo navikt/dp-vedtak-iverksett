@@ -23,13 +23,13 @@ class UtbetalingsvedtakFattetHendelse(
 
     fun mapTilIverksetting(): Iverksetting = Iverksetting(
         vedtakId = vedtakId,
-        ident = ident(),
         virkningsdato = virkningsdato,
         iverksettingsdager = mapTilIverksettingsdager(utbetalingsdager),
     )
 
     private fun mapTilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
-        utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp.fra(it.beløp.toBigDecimal())) }.toMutableList()
+        utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp(it.beløp)) }
+            .toMutableList()
 
     data class Utbetalingsdag(val dato: LocalDate, val beløp: Double)
     enum class Utfall {

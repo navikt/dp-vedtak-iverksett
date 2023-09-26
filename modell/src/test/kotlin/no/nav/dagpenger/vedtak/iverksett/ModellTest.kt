@@ -1,20 +1,17 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
-import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp.Companion.beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utbetalingsdag
 import org.junit.jupiter.api.Test
-import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-class SakTest {
+class ModellTest {
 
     private val ident = "12345678911".tilPersonIdentfikator()
     private val vedtakId = UUID.randomUUID()
@@ -23,35 +20,21 @@ class SakTest {
     private val vedtakstidspunkt = LocalDateTime.now()
     private val ukedagIdag = LocalDate.now().dayOfWeek
     private val virkningsdatoErSøndag: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-    private val sakInspektør get() = SakTestInspektør(sak)
-    private val sak = Sak(ident = ident, sakId = sakId, iverksettingHistorikk = IverksettingHistorikk())
+    private val modellInspektør get() = ModellInspektør(sak)
+    private val sak = Sak(ident = ident, sakId = sakId, iverksettinger = mutableListOf())
 
     @Test
-    fun `Utbetalingsvedtak fører til oppdatert iverksettingshistorikk`() {
-        val aktivitetslogg = Aktivitetslogg()
-
-        sak.håndter(utbetalingsvedtakFattetHendelse(aktivitetslogg))
+    fun `Utbetalingsvedtak fører til oppdatert iverksettingsmodell`() {
+        sak.håndter(utbetalingsvedtakFattetHendelse(Aktivitetslogg()))
 
         assertSoftly {
-            sakInspektør.sakId shouldBe sakId
-            sakInspektør.ident shouldBe ident
-            sakInspektør.iverksettinger.size shouldBe 1
-            sakInspektør.iverksettinger.forEach { iverksetting ->
-                iverksetting.iverksettingsdager.size shouldBe 14
-            }
-            sakInspektør.iverksettinger.first().iverksettingsdager.forEach { iverksettingDag ->
-                when (iverksettingDag.dato.dayOfWeek) {
-                    DayOfWeek.MONDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.TUESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.WEDNESDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.THURSDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.FRIDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 500.beløp
-                    DayOfWeek.SATURDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 0.beløp
-                    DayOfWeek.SUNDAY -> sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(iverksettingDag.dato) shouldBe 0.beløp
-                }
-                shouldThrow<IllegalArgumentException> {
-                    sakInspektør.iverksettingHistorikk.beløpTilUtbetalingForDag(virkningsdatoErSøndag.plusDays(1))
-                }
+            modellInspektør.sakId shouldBe sakId
+            modellInspektør.ident shouldBe ident
+            modellInspektør.vedtakId shouldBe vedtakId
+            modellInspektør.virkningsdato shouldBe virkningsdatoErSøndag
+            modellInspektør.iverksettingsdager.size shouldBe 14
+            utbetalingsdager().forEach { utbetalingsdag ->
+                modellInspektør.iverksettingsdager[utbetalingsdag.dato]!!.verdi shouldBe utbetalingsdag.beløp
             }
         }
     }
@@ -81,8 +64,8 @@ class SakTest {
         Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(6), beløp = 500.0),
         Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(5), beløp = 500.0),
         Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(4), beløp = 500.0),
-        Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(3), beløp = 500.0),
-        Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(2), beløp = 500.0),
+        Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(3), beløp = 250.0),
+        Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(2), beløp = 300.0),
         Utbetalingsdag(dato = virkningsdatoErSøndag.minusDays(1), beløp = 0.0),
         Utbetalingsdag(dato = virkningsdatoErSøndag, beløp = 0.0),
     )
