@@ -37,7 +37,6 @@ class SakMediator(private val sakRepository: SakRepository) {
                     sakId = SakId(hendelse.sakId),
                     iverksettinger = mutableListOf(),
                 )
-
             else -> {
                 TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")
             }
