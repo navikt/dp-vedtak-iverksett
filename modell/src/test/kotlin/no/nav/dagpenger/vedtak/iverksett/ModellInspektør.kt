@@ -11,7 +11,7 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
     lateinit var vedtakId: UUID
     lateinit var ident: PersonIdentifikator
     lateinit var sakId: SakId
-    val iverksettingsdager = mutableMapOf<LocalDate, Beløp>()
+    val iverksettingsdager = mutableListOf<IverksettingDagKopi>()
 
     init {
         sak.accept(this)
@@ -28,6 +28,8 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {
-        iverksettingsdager[dato] = beløp
+        iverksettingsdager.add(IverksettingDagKopi(dato, beløp))
     }
 }
+
+data class IverksettingDagKopi(val dato: LocalDate, val beløp: Beløp)
