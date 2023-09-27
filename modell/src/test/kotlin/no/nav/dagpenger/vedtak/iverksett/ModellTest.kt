@@ -23,77 +23,83 @@ class ModellTest {
     @Test
     fun `To utbetalingsvedtak for ulike perioder fører til oppdatert modell med to iverksettinger`() {
         val førsteVedtakId = UUID.randomUUID()
-        val andreVedtakId = UUID.randomUUID()
-        val behandlingId1 = UUID.randomUUID()
-        val behandlingId2 = UUID.randomUUID()
-        val virkningsdato1: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-        val virkningsdato2: LocalDate = virkningsdato1.plusDays(14)
-        val utbetalingsdager1 = utbetalingsdager(virkningsdato1, 500.0)
-        val utbetalingsdager2 = utbetalingsdager(virkningsdato2, 800.0)
+        val førsteBehandlingId = UUID.randomUUID()
+        val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(førsteVedtakId, behandlingId1, virkningsdato1, utbetalingsdager1, Aktivitetslogg()))
+        sak.håndter(utbetalingsvedtakFattetHendelse(førsteVedtakId, førsteBehandlingId, førsteVirkningsdato, førsteUtbetalingsdager, Aktivitetslogg()))
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe førsteVedtakId
-            modellInspektør.virkningsdato shouldBe virkningsdato1
+            modellInspektør.virkningsdato shouldBe førsteVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe 14
-            for (i in 0..utbetalingsdager1.size - 1) {
-                modellInspektør.iverksettingsdager[i].dato shouldBe utbetalingsdager1[i].dato
-                modellInspektør.iverksettingsdager[i].beløp.verdi shouldBe utbetalingsdager1[i].beløp
+            for (i in 0 until førsteUtbetalingsdager.size) {
+                modellInspektør.iverksettingsdager[i].dato shouldBe førsteUtbetalingsdager[i].dato
+                modellInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
             }
         }
-        sak.håndter(utbetalingsvedtakFattetHendelse(andreVedtakId, behandlingId2, virkningsdato2, utbetalingsdager2, Aktivitetslogg()))
+
+        val andreVedtakId = UUID.randomUUID()
+        val andreBehandlingId = UUID.randomUUID()
+        val andreVirkningsdato: LocalDate = førsteVirkningsdato.plusDays(14)
+        val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 800.0)
+
+        sak.håndter(utbetalingsvedtakFattetHendelse(andreVedtakId, andreBehandlingId, andreVirkningsdato, andreUtbetalingsdager, Aktivitetslogg()))
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe andreVedtakId
-            modellInspektør.virkningsdato shouldBe virkningsdato2
+            modellInspektør.virkningsdato shouldBe andreVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe 28
-            for (i in 0..utbetalingsdager2.size - 1) {
-                modellInspektør.iverksettingsdager[i + 14].dato shouldBe utbetalingsdager2[i].dato
-                modellInspektør.iverksettingsdager[i + 14].beløp.verdi shouldBe utbetalingsdager2[i].beløp
+            for (i in 0 until andreUtbetalingsdager.size) {
+                modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].dato shouldBe andreUtbetalingsdager[i].dato
+                modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
             }
         }
     }
 
     @Test
     fun `To utbetalingsvedtak for samme periode fører til oppdatert modell med to iverksettinger`() {
-        val vedtakId1 = UUID.randomUUID()
-        val vedtakId2 = UUID.randomUUID()
-        val behandlingId1 = UUID.randomUUID()
-        val behandlingId2 = UUID.randomUUID()
-        val virkningsdato1: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-        val virkningsdato2 = virkningsdato1
-        val utbetalingsdager1 = utbetalingsdager(virkningsdato1, 500.0)
-        val utbetalingsdager2 = utbetalingsdager(virkningsdato2, 400.0)
-        sak.håndter(utbetalingsvedtakFattetHendelse(vedtakId1, behandlingId1, virkningsdato1, utbetalingsdager1, Aktivitetslogg()))
+        val førsteVedtakId = UUID.randomUUID()
+        val førsteBehandlingId = UUID.randomUUID()
+        val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
+
+        sak.håndter(utbetalingsvedtakFattetHendelse(førsteVedtakId, førsteBehandlingId, førsteVirkningsdato, førsteUtbetalingsdager, Aktivitetslogg()))
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
-            modellInspektør.vedtakId shouldBe vedtakId1
-            modellInspektør.virkningsdato shouldBe virkningsdato1
-            modellInspektør.iverksettingsdager.size shouldBe 14
-            for (i in 0..utbetalingsdager1.size - 1) {
-                modellInspektør.iverksettingsdager[i].dato shouldBe utbetalingsdager1[i].dato
-                modellInspektør.iverksettingsdager[i].beløp.verdi shouldBe utbetalingsdager1[i].beløp
+            modellInspektør.vedtakId shouldBe førsteVedtakId
+            modellInspektør.virkningsdato shouldBe førsteVirkningsdato
+            modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
+
+            for (i in 0 until førsteUtbetalingsdager.size) {
+                modellInspektør.iverksettingsdager[i].dato shouldBe førsteUtbetalingsdager[i].dato
+                modellInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
             }
         }
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(vedtakId2, behandlingId2, virkningsdato2, utbetalingsdager2, Aktivitetslogg()))
+        val andreVedtakId = UUID.randomUUID()
+        val andreBehandlingId = UUID.randomUUID()
+        val andreVirkningsdato = førsteVirkningsdato
+        val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 400.0)
+
+        sak.håndter(utbetalingsvedtakFattetHendelse(andreVedtakId, andreBehandlingId, andreVirkningsdato, andreUtbetalingsdager, Aktivitetslogg()))
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
-            modellInspektør.vedtakId shouldBe vedtakId2
-            modellInspektør.virkningsdato shouldBe virkningsdato2
-            modellInspektør.iverksettingsdager.size shouldBe 28
-            for (i in 0..utbetalingsdager2.size - 1) {
-                modellInspektør.iverksettingsdager[i + 14].dato shouldBe utbetalingsdager2[i].dato
-                modellInspektør.iverksettingsdager[i + 14].beløp.verdi shouldBe utbetalingsdager2[i].beløp
+            modellInspektør.vedtakId shouldBe andreVedtakId
+            modellInspektør.virkningsdato shouldBe andreVirkningsdato
+            modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
+
+            for (i in 0 until andreUtbetalingsdager.size) {
+                modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].dato shouldBe andreUtbetalingsdager[i].dato
+                modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
             }
         }
     }
