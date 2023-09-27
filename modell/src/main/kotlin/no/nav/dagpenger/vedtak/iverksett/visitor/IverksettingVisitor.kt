@@ -4,5 +4,5 @@ import java.time.LocalDate
 import java.util.UUID
 
 interface IverksettingVisitor : IverksettingDagVisitor {
-    fun visitIverksetting(id: UUID, vedtakId: UUID, behandlingId: UUID, virkningsdato: LocalDate) {}
+    fun visitIverksetting(vedtakId: UUID, behandlingId: UUID, virkningsdato: LocalDate) {}
 }

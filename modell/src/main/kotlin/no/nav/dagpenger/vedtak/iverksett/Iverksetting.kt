@@ -27,8 +27,10 @@ class Iverksetting private constructor(
         iverksettingsdager = iverksettingsdager,
     )
 
+    fun id() = this.id
+
     fun accept(visitor: IverksettingVisitor) {
-        visitor.visitIverksetting(id, vedtakId, behandlingId, virkningsdato)
+        visitor.visitIverksetting(vedtakId, behandlingId, virkningsdato)
         visitAlleIverksettingsdager(visitor)
     }
 

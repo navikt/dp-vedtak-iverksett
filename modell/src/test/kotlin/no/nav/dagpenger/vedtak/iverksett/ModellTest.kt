@@ -35,7 +35,8 @@ class ModellTest {
             modellInspektør.vedtakId shouldBe førsteVedtakId
             modellInspektør.behandlingId shouldBe førsteBehandlingId
             modellInspektør.virkningsdato shouldBe førsteVirkningsdato
-            modellInspektør.iverksettingsdager.size shouldBe 14
+            modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
+
             for (i in 0 until førsteUtbetalingsdager.size) {
                 modellInspektør.iverksettingsdager[i].dato shouldBe førsteUtbetalingsdager[i].dato
                 modellInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
@@ -55,7 +56,8 @@ class ModellTest {
             modellInspektør.vedtakId shouldBe andreVedtakId
             modellInspektør.behandlingId shouldBe andreBehandlingId
             modellInspektør.virkningsdato shouldBe andreVirkningsdato
-            modellInspektør.iverksettingsdager.size shouldBe 28
+            modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
+
             for (i in 0 until andreUtbetalingsdager.size) {
                 modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].dato shouldBe andreUtbetalingsdager[i].dato
                 modellInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
