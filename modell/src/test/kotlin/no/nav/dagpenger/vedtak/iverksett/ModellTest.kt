@@ -33,6 +33,7 @@ class ModellTest {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe førsteVedtakId
+            modellInspektør.behandlingId shouldBe førsteBehandlingId
             modellInspektør.virkningsdato shouldBe førsteVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe 14
             for (i in 0 until førsteUtbetalingsdager.size) {
@@ -52,6 +53,7 @@ class ModellTest {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe andreVedtakId
+            modellInspektør.behandlingId shouldBe andreBehandlingId
             modellInspektør.virkningsdato shouldBe andreVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe 28
             for (i in 0 until andreUtbetalingsdager.size) {
@@ -74,6 +76,7 @@ class ModellTest {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe førsteVedtakId
+            modellInspektør.behandlingId shouldBe førsteBehandlingId
             modellInspektør.virkningsdato shouldBe førsteVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
 
@@ -94,6 +97,7 @@ class ModellTest {
             modellInspektør.sakId shouldBe sakId
             modellInspektør.ident shouldBe ident
             modellInspektør.vedtakId shouldBe andreVedtakId
+            modellInspektør.behandlingId shouldBe andreBehandlingId
             modellInspektør.virkningsdato shouldBe andreVirkningsdato
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
 

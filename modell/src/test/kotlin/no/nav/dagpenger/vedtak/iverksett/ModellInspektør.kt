@@ -9,6 +9,7 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
 
     lateinit var virkningsdato: LocalDate
     lateinit var vedtakId: UUID
+    lateinit var behandlingId: UUID
     lateinit var ident: PersonIdentifikator
     lateinit var sakId: SakId
     val iverksettingsdager = mutableListOf<IverksettingDagKopi>()
@@ -22,8 +23,9 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
         this.sakId = sakId
     }
 
-    override fun visitIverksetting(id: UUID, vedtakId: UUID, virkningsdato: LocalDate) {
+    override fun visitIverksetting(id: UUID, vedtakId: UUID, behandlingId: UUID, virkningsdato: LocalDate) {
         this.vedtakId = vedtakId
+        this.behandlingId = behandlingId
         this.virkningsdato = virkningsdato
     }
 
