@@ -9,6 +9,9 @@ class SakMediator(private val sakRepository: SakRepository) {
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
         håndter(utbetalingsvedtakFattetHendelse) { sak ->
             sak.håndter(utbetalingsvedtakFattetHendelse)
+
+            // bygg opp iverksettDto med mapper?
+            // TODO prøver noe sånt som dette: val sakInspektør get() = SakInspektør(sak)
         }
     }
 
