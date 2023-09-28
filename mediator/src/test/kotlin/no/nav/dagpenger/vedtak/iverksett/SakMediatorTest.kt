@@ -7,12 +7,13 @@ import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.UUID
+import java.time.LocalDate
 
 class SakMediatorTest {
 
     private val testRapid = TestRapid()
-    private val vedtakId = UUID.fromString("408F11D9-4BE8-450A-8B7A-C2F3F9811859")
+    private val førsteVirkningsdato = LocalDate.now().minusDays(14)
+    private val andreVirkningsdato = LocalDate.now()
     private val ident = "12345123451"
     private val sakId = "SAK_NUMMER_1"
     private val sakRepository = InMemorySakRepository()
@@ -32,7 +33,13 @@ class SakMediatorTest {
 
     @Test
     fun `Utbetalingsvedtak fattet hendelse fører til iverksetting`() {
-        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, vedtakId = vedtakId, behandlingId = UUID.randomUUID(), sakId = SakId(sakId)))
+        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, virkningsdato = førsteVirkningsdato, dagsbeløp = 700.0, sakId = SakId(sakId)))
+        sakRepository.hent(SakId(sakId)) shouldNotBe null
+
+        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, virkningsdato = andreVirkningsdato, dagsbeløp = 800.0, sakId = SakId(sakId)))
+        sakRepository.hent(SakId(sakId)) shouldNotBe null
+
+        testRapid.sendTestMessage(utbetalingsvedtakFattet(ident = ident, virkningsdato = førsteVirkningsdato, dagsbeløp = 1490.0, sakId = SakId(sakId)))
         sakRepository.hent(SakId(sakId)) shouldNotBe null
     }
 }

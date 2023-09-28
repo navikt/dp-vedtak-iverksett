@@ -1,58 +1,75 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-internal fun utbetalingsvedtakFattet(ident: String, vedtakId: UUID, behandlingId: UUID, sakId: SakId) =
+internal fun utbetalingsvedtakFattet(ident: String, virkningsdato: LocalDate, dagsbeløp: Double, sakId: SakId) =
     //language=JSON
     """
         {
           "@event_name": "utbetaling_vedtak_fattet",
           "ident": "$ident",
-          "behandlingId": "$behandlingId",
+          "behandlingId": "${UUID.randomUUID()}",
           "sakId": "$sakId",
-          "vedtakId": "$vedtakId",
+          "vedtakId": "${UUID.randomUUID()}",
           "vedtaktidspunkt": "${LocalDateTime.now()}",
-          "virkningsdato": "2023-06-11",
+          "virkningsdato": "$virkningsdato",
           "utbetalingsdager": [
             {
-              "dato": "2023-05-29",
+              "dato": "${virkningsdato.minusDays(13)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(12)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(11)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(10)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(9)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(8)}",
               "beløp": "0.0"
             },
             {
-              "dato": "2023-05-30",
+              "dato": "${virkningsdato.minusDays(7)}",
               "beløp": "0.0"
             },
             {
-              "dato": "2023-05-31",
+              "dato": "${virkningsdato.minusDays(6)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(5)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(4)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(3)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(2)}",
+              "beløp": "$dagsbeløp"
+            },
+            {
+              "dato": "${virkningsdato.minusDays(1)}",
               "beløp": "0.0"
             },
             {
-              "dato": "2023-06-01",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-02",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-05",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-06",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-07",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-08",
-              "beløp": "0.0"
-            },
-            {
-              "dato": "2023-06-09",
+              "dato": "$virkningsdato",
               "beløp": "0.0"
             }
           ],
