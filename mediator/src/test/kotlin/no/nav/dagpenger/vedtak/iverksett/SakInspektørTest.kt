@@ -55,7 +55,6 @@ class SakInspektørTest {
                 sakInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
             }
         }
-        byggIverksettDto(vedtakIdFilter = førsteVedtakId)
 
         val andreVedtakId = UUID.randomUUID()
         val andreBehandlingId = UUID.randomUUID()
@@ -85,7 +84,8 @@ class SakInspektørTest {
                 sakInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
             }
         }
-        byggIverksettDto(vedtakIdFilter = andreVedtakId)
+
+        sakInspektør.forrigeBehandlingId() shouldBe førsteBehandlingId
     }
 
     @Test
@@ -191,7 +191,7 @@ class SakInspektørTest {
     private fun byggIverksettDto(vedtakIdFilter: UUID) {
         if (sakInspektør.vedtakId == vedtakIdFilter) {
             println("Bygger IverksettDto for iverksetting av vedtakId $vedtakIdFilter - behandlingId ${sakInspektør.behandlingId}")
-            val sakIdIverksett: String? = sakId.sakId
+            val sakIdIverksett: String = sakId.sakId
             val iverksettDto = IverksettDto(
                 saksreferanse = sakIdIverksett,
                 behandlingId = sakInspektør.behandlingId,

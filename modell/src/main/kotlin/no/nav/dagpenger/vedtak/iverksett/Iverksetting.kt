@@ -14,7 +14,7 @@ class Iverksetting private constructor(
     private val virkningsdato: LocalDate,
     private val vedtakstidspunkt: LocalDateTime,
     private val iverksettingsdager: MutableList<IverksettingDag>,
-) : Aktivitetskontekst {
+) : Aktivitetskontekst, Comparable<Iverksetting> {
 
     constructor(
         vedtakId: UUID,
@@ -37,6 +37,8 @@ class Iverksetting private constructor(
         visitor.visitIverksetting(vedtakId, behandlingId, virkningsdato, vedtakstidspunkt)
         visitAlleIverksettingsdager(visitor)
     }
+
+    override fun compareTo(other: Iverksetting) = this.vedtakstidspunkt.compareTo(other.vedtakstidspunkt)
 
     override fun toSpesifikkKontekst(): SpesifikkKontekst {
         return SpesifikkKontekst(

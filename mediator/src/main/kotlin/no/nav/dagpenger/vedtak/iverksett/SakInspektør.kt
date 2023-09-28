@@ -21,9 +21,9 @@ class SakInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    fun forrigeBehandling(vedtakTilIverksettingId: UUID) {
-        // iverksettinger.sortBy { iverksetting -> iverksetting.vedtakstidspunkt }
-    }
+    fun forrigeBehandlingId() = BehandlingIdVisitor(forrigeIverksetting()).behandlingId
+
+    private fun forrigeIverksetting() = iverksettinger.sortedDescending()[1]
 
     override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
         this.ident = ident
