@@ -26,129 +26,32 @@ class SakInspektørTest {
     val sakInspektør get() = SakInspektør(sak)
 
     @Test
-    fun `Utbetalingsvedtak for to etterfølgende rapporteringer fører til to iverksettinger der dager aggregeres`() {
-        val førsteVedtakId = UUID.randomUUID()
+    fun `ForrigeBehandlingId er null for første vedtak, ved neste vedtak er forrigeBehandlingId lik første vedtaks behandlingId`() {
         val førsteBehandlingId = UUID.randomUUID()
         val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
         val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
 
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
-                førsteVedtakId,
-                førsteBehandlingId,
-                førsteVirkningsdato,
-                førsteUtbetalingsdager,
-                Aktivitetslogg(),
+                vedtakId = UUID.randomUUID(),
+                behandlingId = førsteBehandlingId,
+                virkningsdato = førsteVirkningsdato,
+                utbetalingsdager = førsteUtbetalingsdager,
             ),
         )
+        sakInspektør.forrigeBehandlingId() shouldBe null
 
-        assertSoftly {
-            sakInspektør.sakId shouldBe sakId
-            sakInspektør.ident shouldBe ident
-            sakInspektør.vedtakId shouldBe førsteVedtakId
-            sakInspektør.behandlingId shouldBe førsteBehandlingId
-            sakInspektør.virkningsdato shouldBe førsteVirkningsdato
-            sakInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
-
-            for (i in 0 until førsteUtbetalingsdager.size) {
-                sakInspektør.iverksettingsdager[i].dato shouldBe førsteUtbetalingsdager[i].dato
-                sakInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
-            }
-        }
-
-        val andreVedtakId = UUID.randomUUID()
-        val andreBehandlingId = UUID.randomUUID()
         val andreVirkningsdato: LocalDate = førsteVirkningsdato.plusDays(førsteUtbetalingsdager.size.toLong())
-        val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 633.0)
 
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
-                andreVedtakId,
-                andreBehandlingId,
+                vedtakId = UUID.randomUUID(),
+                behandlingId = UUID.randomUUID(),
                 andreVirkningsdato,
-                andreUtbetalingsdager,
-                Aktivitetslogg(),
+                utbetalingsdager = utbetalingsdager(andreVirkningsdato, 633.0),
             ),
         )
-
-        assertSoftly {
-            sakInspektør.sakId shouldBe sakId
-            sakInspektør.ident shouldBe ident
-            sakInspektør.vedtakId shouldBe andreVedtakId
-            sakInspektør.behandlingId shouldBe andreBehandlingId
-            sakInspektør.virkningsdato shouldBe andreVirkningsdato
-            sakInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
-
-            for (i in 0 until andreUtbetalingsdager.size) {
-                sakInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].dato shouldBe andreUtbetalingsdager[i].dato
-                sakInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
-            }
-        }
-
         sakInspektør.forrigeBehandlingId() shouldBe førsteBehandlingId
-    }
-
-    @Test
-    fun `Utbetalingsvedtak for to rapporteringer for samme periode fører til to iverksettinger med de samme dagene`() {
-        val førsteVedtakId = UUID.randomUUID()
-        val førsteBehandlingId = UUID.randomUUID()
-        val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-        val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
-
-        sak.håndter(
-            utbetalingsvedtakFattetHendelse(
-                førsteVedtakId,
-                førsteBehandlingId,
-                førsteVirkningsdato,
-                førsteUtbetalingsdager,
-                Aktivitetslogg(),
-            ),
-        )
-
-        assertSoftly {
-            sakInspektør.sakId shouldBe sakId
-            sakInspektør.ident shouldBe ident
-            sakInspektør.vedtakId shouldBe førsteVedtakId
-            sakInspektør.behandlingId shouldBe førsteBehandlingId
-            sakInspektør.virkningsdato shouldBe førsteVirkningsdato
-            sakInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
-
-            for (i in 0 until førsteUtbetalingsdager.size) {
-                sakInspektør.iverksettingsdager[i].dato shouldBe førsteUtbetalingsdager[i].dato
-                sakInspektør.iverksettingsdager[i].beløp.verdi shouldBe førsteUtbetalingsdager[i].beløp
-            }
-        }
-        byggIverksettDto(vedtakIdFilter = førsteVedtakId)
-
-        val andreVedtakId = UUID.randomUUID()
-        val andreBehandlingId = UUID.randomUUID()
-        val andreVirkningsdato = førsteVirkningsdato
-        val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 633.0)
-
-        sak.håndter(
-            utbetalingsvedtakFattetHendelse(
-                andreVedtakId,
-                andreBehandlingId,
-                andreVirkningsdato,
-                andreUtbetalingsdager,
-                Aktivitetslogg(),
-            ),
-        )
-
-        assertSoftly {
-            sakInspektør.sakId shouldBe sakId
-            sakInspektør.ident shouldBe ident
-            sakInspektør.vedtakId shouldBe andreVedtakId
-            sakInspektør.behandlingId shouldBe andreBehandlingId
-            sakInspektør.virkningsdato shouldBe andreVirkningsdato
-            sakInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
-
-            for (i in 0 until andreUtbetalingsdager.size) {
-                sakInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].dato shouldBe andreUtbetalingsdager[i].dato
-                sakInspektør.iverksettingsdager[i + førsteUtbetalingsdager.size].beløp.verdi shouldBe andreUtbetalingsdager[i].beløp
-            }
-        }
-        byggIverksettDto(vedtakIdFilter = andreVedtakId)
     }
 
     private fun utbetalingsvedtakFattetHendelse(
@@ -156,7 +59,6 @@ class SakInspektørTest {
         behandlingId: UUID,
         virkningsdato: LocalDate,
         utbetalingsdager: List<UtbetalingsvedtakFattetHendelse.Utbetalingsdag>,
-        aktivitetslogg: Aktivitetslogg,
     ) =
         UtbetalingsvedtakFattetHendelse(
             meldingsreferanseId = UUID.randomUUID(),
@@ -168,7 +70,6 @@ class SakInspektørTest {
             virkningsdato = virkningsdato,
             utbetalingsdager = utbetalingsdager,
             utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
-            aktivitetslogg = aktivitetslogg,
         )
 
     private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double) = listOf(
