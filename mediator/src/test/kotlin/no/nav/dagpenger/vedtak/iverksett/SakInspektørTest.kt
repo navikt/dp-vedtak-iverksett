@@ -1,8 +1,10 @@
 package no.nav.dagpenger.vedtak.iverksett
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.matchers.shouldBe
-import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.UUID
+import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
@@ -12,9 +14,6 @@ import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.UUID
 
 class SakInspektørTest {
     private val ident = "12345678911".tilPersonIdentfikator()
@@ -97,9 +96,10 @@ class SakInspektørTest {
                 saksreferanse = sakIdIverksett,
                 behandlingId = sakInspektør.behandlingId,
                 personIdent = ident.identifikator(),
+                forrigeIverksetting = forrigeIverksetting(),
                 vedtak = VedtaksdetaljerDto(
                     vedtakstype = VedtakType.UTBETALINGSVEDTAK,
-                    vedtakstidspunkt = LocalDateTime.now(), // TODO: Må hentes ut med visitor
+                    vedtakstidspunkt = sakInspektør.vedtakstidspunkt,
                     resultat = Vedtaksresultat.INNVILGET, // TODO: Må hentes ut med visitor
                     utbetalinger = finnUtbetalingsdager(),
                     saksbehandlerId = "DIGIDAG",
@@ -117,16 +117,32 @@ class SakInspektørTest {
         }
     }
 
+    private fun forrigeIverksetting(): ForrigeIverksettingDto? {
+        val forrigeBehandlingId = sakInspektør.forrigeBehandlingId()
+        return if (forrigeBehandlingId != null) {
+            ForrigeIverksettingDto(behandlingId = forrigeBehandlingId)
+        } else null
+    }
+
     private fun finnUtbetalingsdager(): List<UtbetalingDto> {
         val utbetalingerMutable = mutableListOf<UtbetalingDto>()
         val alleUtbetalingsdagerMap = mutableMapOf<LocalDate, Double>()
 
         for (i in 0 until sakInspektør.iverksettingsdager.size) {
-            alleUtbetalingsdagerMap.put(sakInspektør.iverksettingsdager[i].dato, sakInspektør.iverksettingsdager[i].beløp.verdi)
+            alleUtbetalingsdagerMap.put(
+                sakInspektør.iverksettingsdager[i].dato,
+                sakInspektør.iverksettingsdager[i].beløp.verdi
+            )
         }
 
         alleUtbetalingsdagerMap.forEach { entry ->
-            utbetalingerMutable.add(UtbetalingDto(belopPerDag = entry.value.toInt(), fraOgMedDato = entry.key, tilOgMedDato = entry.key))
+            utbetalingerMutable.add(
+                UtbetalingDto(
+                    belopPerDag = entry.value.toInt(),
+                    fraOgMedDato = entry.key,
+                    tilOgMedDato = entry.key
+                )
+            )
         }
 
         val utbetalinger: List<UtbetalingDto> = utbetalingerMutable
