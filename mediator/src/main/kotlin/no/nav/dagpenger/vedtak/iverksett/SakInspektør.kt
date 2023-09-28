@@ -3,11 +3,13 @@ package no.nav.dagpenger.vedtak.iverksett
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 class SakInspektør(sak: Sak) : SakVisitor {
 
     lateinit var virkningsdato: LocalDate
+    lateinit var vedtakstidspunkt: LocalDateTime
     lateinit var vedtakId: UUID
     lateinit var behandlingId: UUID
     lateinit var ident: PersonIdentifikator
@@ -19,16 +21,26 @@ class SakInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
+    fun forrigeBehandling(vedtakTilIverksettingId: UUID) {
+        // iverksettinger.sortBy { iverksetting -> iverksetting.vedtakstidspunkt }
+    }
+
     override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
         this.ident = ident
         this.sakId = sakId
     }
 
-    override fun visitIverksetting(vedtakId: UUID, behandlingId: UUID, virkningsdato: LocalDate) {
+    override fun visitIverksetting(
+        vedtakId: UUID,
+        behandlingId: UUID,
+        virkningsdato: LocalDate,
+        vedtakstidspunkt: LocalDateTime,
+    ) {
         this.vedtakId = vedtakId
         this.behandlingId = behandlingId
         this.virkningsdato = virkningsdato
-        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, virkningsdato, mutableListOf()))
+        this.vedtakstidspunkt = vedtakstidspunkt
+        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, virkningsdato, vedtakstidspunkt, mutableListOf()))
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {

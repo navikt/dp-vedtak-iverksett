@@ -25,6 +25,7 @@ class UtbetalingsvedtakFattetHendelse(
         vedtakId = vedtakId,
         behandlingId = behandlingId,
         virkningsdato = virkningsdato,
+        vedtakstidspunkt = vedtakstidspunkt,
         iverksettingsdager = mapTilIverksettingsdager(utbetalingsdager),
     )
 

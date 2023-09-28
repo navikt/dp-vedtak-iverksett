@@ -25,9 +25,19 @@ class ModellTest {
         val førsteVedtakId = UUID.randomUUID()
         val førsteBehandlingId = UUID.randomUUID()
         val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteVedtakstidspunkt: LocalDateTime = LocalDateTime.now().minusDays(ukedagIdag.value.toLong())
         val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(førsteVedtakId, førsteBehandlingId, førsteVirkningsdato, førsteUtbetalingsdager, Aktivitetslogg()))
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                førsteVedtakId,
+                førsteBehandlingId,
+                førsteVirkningsdato,
+                førsteVedtakstidspunkt,
+                førsteUtbetalingsdager,
+                Aktivitetslogg(),
+            ),
+        )
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
@@ -35,6 +45,7 @@ class ModellTest {
             modellInspektør.vedtakId shouldBe førsteVedtakId
             modellInspektør.behandlingId shouldBe førsteBehandlingId
             modellInspektør.virkningsdato shouldBe førsteVirkningsdato
+            modellInspektør.vedtakstidspunkt shouldBe førsteVedtakstidspunkt
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
 
             for (i in 0 until førsteUtbetalingsdager.size) {
@@ -46,9 +57,19 @@ class ModellTest {
         val andreVedtakId = UUID.randomUUID()
         val andreBehandlingId = UUID.randomUUID()
         val andreVirkningsdato: LocalDate = førsteVirkningsdato.plusDays(14)
+        val andreVedtakstidspunkt: LocalDateTime = førsteVedtakstidspunkt.plusDays(14)
         val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 800.0)
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(andreVedtakId, andreBehandlingId, andreVirkningsdato, andreUtbetalingsdager, Aktivitetslogg()))
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                andreVedtakId,
+                andreBehandlingId,
+                andreVirkningsdato,
+                andreVedtakstidspunkt,
+                andreUtbetalingsdager,
+                Aktivitetslogg(),
+            ),
+        )
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
@@ -56,6 +77,7 @@ class ModellTest {
             modellInspektør.vedtakId shouldBe andreVedtakId
             modellInspektør.behandlingId shouldBe andreBehandlingId
             modellInspektør.virkningsdato shouldBe andreVirkningsdato
+            modellInspektør.vedtakstidspunkt shouldBe andreVedtakstidspunkt
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
 
             for (i in 0 until andreUtbetalingsdager.size) {
@@ -70,9 +92,19 @@ class ModellTest {
         val førsteVedtakId = UUID.randomUUID()
         val førsteBehandlingId = UUID.randomUUID()
         val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteVedtakstidspunkt: LocalDateTime = LocalDateTime.now().minusDays(ukedagIdag.value.toLong())
         val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(førsteVedtakId, førsteBehandlingId, førsteVirkningsdato, førsteUtbetalingsdager, Aktivitetslogg()))
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                førsteVedtakId,
+                førsteBehandlingId,
+                førsteVirkningsdato,
+                førsteVedtakstidspunkt,
+                førsteUtbetalingsdager,
+                Aktivitetslogg(),
+            ),
+        )
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
@@ -91,9 +123,19 @@ class ModellTest {
         val andreVedtakId = UUID.randomUUID()
         val andreBehandlingId = UUID.randomUUID()
         val andreVirkningsdato = førsteVirkningsdato
+        val andreVedtakstidspunkt = førsteVedtakstidspunkt.plusDays(1)
         val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 400.0)
 
-        sak.håndter(utbetalingsvedtakFattetHendelse(andreVedtakId, andreBehandlingId, andreVirkningsdato, andreUtbetalingsdager, Aktivitetslogg()))
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                andreVedtakId,
+                andreBehandlingId,
+                andreVirkningsdato,
+                andreVedtakstidspunkt,
+                andreUtbetalingsdager,
+                Aktivitetslogg(),
+            ),
+        )
 
         assertSoftly {
             modellInspektør.sakId shouldBe sakId
@@ -110,14 +152,21 @@ class ModellTest {
         }
     }
 
-    private fun utbetalingsvedtakFattetHendelse(vedtakId: UUID, behandlingId: UUID, virkningsdato: LocalDate, utbetalingsdager: List<Utbetalingsdag>, aktivitetslogg: Aktivitetslogg) =
+    private fun utbetalingsvedtakFattetHendelse(
+        vedtakId: UUID,
+        behandlingId: UUID,
+        virkningsdato: LocalDate,
+        vedtakstidspunkt: LocalDateTime,
+        utbetalingsdager: List<Utbetalingsdag>,
+        aktivitetslogg: Aktivitetslogg,
+    ) =
         UtbetalingsvedtakFattetHendelse(
             meldingsreferanseId = UUID.randomUUID(),
             ident = ident.identifikator(),
             vedtakId = vedtakId,
             behandlingId = behandlingId,
             sakId = sakId.sakId,
-            vedtakstidspunkt = LocalDateTime.now(),
+            vedtakstidspunkt = vedtakstidspunkt,
             virkningsdato = virkningsdato,
             utbetalingsdager = utbetalingsdager,
             utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
