@@ -7,6 +7,7 @@ import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
+import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.SakRepository
@@ -14,17 +15,19 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-class SakMediator(private val sakRepository: SakRepository) {
+internal class SakMediator(private val sakRepository: SakRepository, private val iverksettClient: IverksettClient) {
     fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
-        håndter(utbetalingsvedtakFattetHendelse) { sak ->
-            sak.håndter(utbetalingsvedtakFattetHendelse)
-            val sakInspektør = SakInspektør(sak)
-            val vedtakIdFilter = utbetalingsvedtakFattetHendelse.vedtakId // Glaum det....
-            byggIverksettDto(vedtakIdFilter, sakInspektør)
+        håndter(
+            hendelse = utbetalingsvedtakFattetHendelse,
+            håndter = håndterIverksettingAv(utbetalingsvedtakFattetHendelse),
+        )
+    }
 
-            // bygg opp iverksettDto med mapper?
-            // TODO prøver noe sånt som dette: val sakInspektør get() = SakInspektør(sak)
-        }
+    private fun håndterIverksettingAv(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) = { sak: Sak ->
+        sak.håndter(utbetalingsvedtakFattetHendelse)
+        val sakInspektør = SakInspektør(sak)
+        val vedtakIdFilter = utbetalingsvedtakFattetHendelse.vedtakId // Glaum det....
+        byggIverksettDto(vedtakIdFilter, sakInspektør)
     }
 
     private fun håndter(hendelse: Hendelse, håndter: (Sak) -> Unit) {

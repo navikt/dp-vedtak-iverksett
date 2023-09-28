@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import mu.KotlinLogging
+import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakRepository
@@ -25,6 +26,7 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
             hendelseRepository = InMemoryMeldingRepository(),
             sakMediator = SakMediator(
                 sakRepository = InMemorySakRepository(),
+                iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
                 // behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
             ),
         )

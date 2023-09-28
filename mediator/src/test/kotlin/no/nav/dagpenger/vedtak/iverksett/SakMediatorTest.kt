@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import io.kotest.matchers.shouldNotBe
+import io.mockk.mockk
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakRepository
@@ -22,7 +23,7 @@ class SakMediatorTest {
         HendelseMediator(
             rapidsConnection = testRapid,
             hendelseRepository = InMemoryMeldingRepository(),
-            sakMediator = SakMediator(sakRepository),
+            sakMediator = SakMediator(sakRepository, mockk()),
         )
     }
 
