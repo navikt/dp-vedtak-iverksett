@@ -38,7 +38,7 @@ class SakMediatorTest {
     }
 
     @Test
-    fun `Utbetalingsvedtak fattet hendelse fører til iverksetting`() {
+    fun `Hver hendelse om fattet utbetalingsvedtak fører til en iverksetting`() {
         coEvery { iverksettClientMock.iverksett(any()) } just Runs
 
         testRapid.sendTestMessage(
@@ -51,6 +51,21 @@ class SakMediatorTest {
         )
 
         coVerify(exactly = 1) {
+            iverksettClientMock.iverksett(any())
+        }
+
+        sakRepository.hent(SakId(sakId)) shouldNotBe null
+
+        testRapid.sendTestMessage(
+            utbetalingsvedtakFattet(
+                ident = ident,
+                virkningsdato = førsteVirkningsdato.plusDays(14),
+                dagsbeløp = 800.0,
+                sakId = SakId(sakId),
+            ),
+        )
+
+        coVerify(exactly = 2) {
             iverksettClientMock.iverksett(any())
         }
 
