@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.math.absoluteValue
 
 class ModellTest {
 
@@ -173,20 +174,17 @@ class ModellTest {
             aktivitetslogg = aktivitetslogg,
         )
 
-    private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double) = listOf(
-        Utbetalingsdag(dato = virkningsdato.minusDays(13), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(12), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(11), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(10), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(9), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(8), beløp = 0.0),
-        Utbetalingsdag(dato = virkningsdato.minusDays(7), beløp = 0.0),
-        Utbetalingsdag(dato = virkningsdato.minusDays(6), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(5), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(4), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(3), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(2), beløp = dagsbeløp),
-        Utbetalingsdag(dato = virkningsdato.minusDays(1), beløp = 0.0),
-        Utbetalingsdag(dato = virkningsdato, beløp = 0.0),
-    )
+    private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double): MutableList<Utbetalingsdag> {
+        val utbetalingsdager = mutableListOf<Utbetalingsdag>()
+
+        for (i in -13..0) {
+            utbetalingsdager.add(
+                Utbetalingsdag(
+                    dato = virkningsdato.minusDays(i.absoluteValue.toLong()),
+                    beløp = dagsbeløp,
+                ),
+            )
+        }
+        return utbetalingsdager
+    }
 }

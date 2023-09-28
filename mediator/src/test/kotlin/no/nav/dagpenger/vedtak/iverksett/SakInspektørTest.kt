@@ -3,10 +3,12 @@ package no.nav.dagpenger.vedtak.iverksett
 import io.kotest.matchers.shouldBe
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utbetalingsdag
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.math.absoluteValue
 
 class SakInspektørTest {
     private val ident = "12345678911".tilPersonIdentfikator()
@@ -17,38 +19,39 @@ class SakInspektørTest {
 
     @Test
     fun `ForrigeBehandlingId er null for første vedtak, ved neste vedtak er forrigeBehandlingId lik første vedtaks behandlingId`() {
-        val førsteBehandlingId = UUID.randomUUID()
-        val førsteVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-        val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
+        val førsteVedtaksBehandlingId = UUID.randomUUID()
+        val førsteVedtaksVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteVedtaksUtbetalingsdager = utbetalingsdager(førsteVedtaksVirkningsdato, 500.0)
 
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
                 vedtakId = UUID.randomUUID(),
-                behandlingId = førsteBehandlingId,
-                virkningsdato = førsteVirkningsdato,
-                utbetalingsdager = førsteUtbetalingsdager,
+                behandlingId = førsteVedtaksBehandlingId,
+                virkningsdato = førsteVedtaksVirkningsdato,
+                utbetalingsdager = førsteVedtaksUtbetalingsdager,
             ),
         )
         sakInspektør.forrigeBehandlingId() shouldBe null
 
-        val andreVirkningsdato: LocalDate = førsteVirkningsdato.plusDays(førsteUtbetalingsdager.size.toLong())
+        val andreVedtaksVirkningsdato: LocalDate =
+            førsteVedtaksVirkningsdato.plusDays(førsteVedtaksUtbetalingsdager.size.toLong())
 
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
                 vedtakId = UUID.randomUUID(),
                 behandlingId = UUID.randomUUID(),
-                virkningsdato = andreVirkningsdato,
-                utbetalingsdager = utbetalingsdager(andreVirkningsdato, 633.0),
+                virkningsdato = andreVedtaksVirkningsdato,
+                utbetalingsdager = utbetalingsdager(andreVedtaksVirkningsdato, 633.0),
             ),
         )
-        sakInspektør.forrigeBehandlingId() shouldBe førsteBehandlingId
+        sakInspektør.forrigeBehandlingId() shouldBe førsteVedtaksBehandlingId
     }
 
     private fun utbetalingsvedtakFattetHendelse(
         vedtakId: UUID,
         behandlingId: UUID,
         virkningsdato: LocalDate,
-        utbetalingsdager: List<UtbetalingsvedtakFattetHendelse.Utbetalingsdag>,
+        utbetalingsdager: List<Utbetalingsdag>,
     ) =
         UtbetalingsvedtakFattetHendelse(
             meldingsreferanseId = UUID.randomUUID(),
@@ -62,20 +65,17 @@ class SakInspektørTest {
             utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
         )
 
-    private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double) = listOf(
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(13), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(12), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(11), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(10), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(9), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(8), beløp = 0.0),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(7), beløp = 0.0),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(6), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(5), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(4), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(3), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(2), beløp = dagsbeløp),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato.minusDays(1), beløp = 0.0),
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(dato = virkningsdato, beløp = 0.0),
-    )
+    private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double): MutableList<Utbetalingsdag> {
+        val utbetalingsdager = mutableListOf<Utbetalingsdag>()
+
+        for (i in -13..0) {
+            utbetalingsdager.add(
+                Utbetalingsdag(
+                    dato = virkningsdato.minusDays(i.absoluteValue.toLong()),
+                    beløp = dagsbeløp,
+                ),
+            )
+        }
+        return utbetalingsdager
+    }
 }
