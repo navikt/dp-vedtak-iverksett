@@ -1,5 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
@@ -27,7 +28,10 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         sak.håndter(utbetalingsvedtakFattetHendelse)
         val sakInspektør = SakInspektør(sak)
         val vedtakIdFilter = utbetalingsvedtakFattetHendelse.vedtakId // Glaum det....
-        byggIverksettDto(vedtakIdFilter, sakInspektør)
+        val iverksettDto = byggIverksettDto(vedtakIdFilter, sakInspektør)
+        runBlocking {
+            iverksettClient.iverksett(iverksettDto = iverksettDto)
+        }
     }
 
     private fun håndter(hendelse: Hendelse, håndter: (Sak) -> Unit) {
@@ -57,38 +61,35 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
                     sakId = SakId(hendelse.sakId),
                     iverksettinger = mutableListOf(),
                 )
+
             else -> {
                 TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")
             }
         }
     }
 
-    private fun byggIverksettDto(vedtakIdFilter: UUID, sakInspektør: SakInspektør) {
-        if (sakInspektør.vedtakId == vedtakIdFilter) {
-            println("Bygger IverksettDto for iverksetting av vedtakId $vedtakIdFilter - behandlingId ${sakInspektør.behandlingId}")
-            val sakIdIverksett: String? = sakInspektør.sakId.sakId
-            val iverksettDto = IverksettDto(
-                saksreferanse = sakIdIverksett,
-                behandlingId = sakInspektør.behandlingId,
-                personIdent = "12345678901", // TODO
-                vedtak = VedtaksdetaljerDto(
-                    vedtakstype = VedtakType.UTBETALINGSVEDTAK,
-                    vedtakstidspunkt = LocalDateTime.now(), // TODO: Må hentes ut med visitor
-                    resultat = Vedtaksresultat.INNVILGET, // TODO: Må hentes ut med visitor
-                    utbetalinger = finnUtbetalingsdager(sakInspektør),
-                    saksbehandlerId = "DIGIDAG",
-                    beslutterId = "DIGIDAG",
-                    vedtaksperioder = listOf(
-                        VedtaksperiodeDto(
-                            fraOgMedDato = sakInspektør.virkningsdato,
-                        ),
+    private fun byggIverksettDto(vedtakIdFilter: UUID, sakInspektør: SakInspektør): IverksettDto {
+        println("Bygger IverksettDto for iverksetting av vedtakId $vedtakIdFilter - behandlingId ${sakInspektør.behandlingId}")
+        val iverksettDto = IverksettDto(
+            saksreferanse = sakInspektør.sakId.sakId,
+            behandlingId = sakInspektør.behandlingId,
+            personIdent = "12345678901", // TODO
+            vedtak = VedtaksdetaljerDto(
+                vedtakstype = VedtakType.UTBETALINGSVEDTAK,
+                vedtakstidspunkt = LocalDateTime.now(), // TODO: Må hentes ut med visitor
+                resultat = Vedtaksresultat.INNVILGET, // TODO: Må hentes ut med visitor
+                utbetalinger = finnUtbetalingsdager(sakInspektør),
+                saksbehandlerId = "DIGIDAG",
+                beslutterId = "DIGIDAG",
+                vedtaksperioder = listOf(
+                    VedtaksperiodeDto(
+                        fraOgMedDato = sakInspektør.virkningsdato,
                     ),
                 ),
-            )
-            println("IverksettDto: " + iverksettDto)
-        } else {
-            println("******filter****** $vedtakIdFilter er ulik ${sakInspektør.vedtakId}")
-        }
+            ),
+        )
+        println("IverksettDto: " + iverksettDto)
+        return iverksettDto
     }
 
     private fun finnUtbetalingsdager(sakInspektør: SakInspektør): List<UtbetalingDto> {
@@ -96,11 +97,20 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         val alleUtbetalingsdagerMap = mutableMapOf<LocalDate, Double>()
 
         for (i in 0 until sakInspektør.iverksettingsdager.size) {
-            alleUtbetalingsdagerMap.put(sakInspektør.iverksettingsdager[i].dato, sakInspektør.iverksettingsdager[i].beløp.verdi)
+            alleUtbetalingsdagerMap.put(
+                sakInspektør.iverksettingsdager[i].dato,
+                sakInspektør.iverksettingsdager[i].beløp.verdi,
+            )
         }
 
         alleUtbetalingsdagerMap.forEach { entry ->
-            utbetalingerMutable.add(UtbetalingDto(belopPerDag = entry.value.toInt(), fraOgMedDato = entry.key, tilOgMedDato = entry.key))
+            utbetalingerMutable.add(
+                UtbetalingDto(
+                    belopPerDag = entry.value.toInt(),
+                    fraOgMedDato = entry.key,
+                    tilOgMedDato = entry.key,
+                ),
+            )
         }
 
         val utbetalinger: List<UtbetalingDto> = utbetalingerMutable
