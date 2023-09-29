@@ -15,8 +15,8 @@ class BehandlingIdVisitor(iverksetting: Iverksetting) : IverksettingVisitor {
     override fun visitIverksetting(
         vedtakId: UUID,
         behandlingId: UUID,
-        virkningsdato: LocalDate,
         vedtakstidspunkt: LocalDateTime,
+        virkningsdato: LocalDate,
     ) {
         this.behandlingId = behandlingId
     }

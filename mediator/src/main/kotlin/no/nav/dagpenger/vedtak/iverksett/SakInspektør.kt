@@ -68,14 +68,14 @@ class SakInspektør(sak: Sak) : SakVisitor {
     override fun visitIverksetting(
         vedtakId: UUID,
         behandlingId: UUID,
-        virkningsdato: LocalDate,
         vedtakstidspunkt: LocalDateTime,
+        virkningsdato: LocalDate,
     ) {
         this.vedtakId = vedtakId
         this.behandlingId = behandlingId
-        this.virkningsdato = virkningsdato
         this.vedtakstidspunkt = vedtakstidspunkt
-        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, virkningsdato, vedtakstidspunkt, mutableListOf()))
+        this.virkningsdato = virkningsdato
+        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, mutableListOf()))
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {

@@ -24,8 +24,8 @@ class UtbetalingsvedtakFattetHendelse(
     fun mapTilIverksetting(): Iverksetting = Iverksetting(
         vedtakId = vedtakId,
         behandlingId = behandlingId,
-        virkningsdato = virkningsdato,
         vedtakstidspunkt = vedtakstidspunkt,
+        virkningsdato = virkningsdato,
         iverksettingsdager = mapTilIverksettingsdager(utbetalingsdager),
     )
 

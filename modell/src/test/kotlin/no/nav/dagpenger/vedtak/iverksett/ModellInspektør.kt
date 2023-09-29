@@ -28,8 +28,8 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
     override fun visitIverksetting(
         vedtakId: UUID,
         behandlingId: UUID,
-        virkningsdato: LocalDate,
         vedtakstidspunkt: LocalDateTime,
+        virkningsdato: LocalDate,
     ) {
         this.vedtakId = vedtakId
         this.behandlingId = behandlingId

@@ -8,8 +8,8 @@ interface IverksettingVisitor : IverksettingDagVisitor {
     fun visitIverksetting(
         vedtakId: UUID,
         behandlingId: UUID,
-        virkningsdato: LocalDate,
         vedtakstidspunkt: LocalDateTime,
+        virkningsdato: LocalDate,
     ) {
     }
 }

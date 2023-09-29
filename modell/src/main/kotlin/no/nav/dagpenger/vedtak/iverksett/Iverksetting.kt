@@ -11,30 +11,30 @@ class Iverksetting private constructor(
     private val id: UUID,
     private val vedtakId: UUID,
     private val behandlingId: UUID,
-    private val virkningsdato: LocalDate,
     private val vedtakstidspunkt: LocalDateTime,
+    private val virkningsdato: LocalDate,
     private val iverksettingsdager: MutableList<IverksettingDag>,
 ) : Aktivitetskontekst, Comparable<Iverksetting> {
 
     constructor(
         vedtakId: UUID,
         behandlingId: UUID,
-        virkningsdato: LocalDate,
         vedtakstidspunkt: LocalDateTime,
+        virkningsdato: LocalDate,
         iverksettingsdager: MutableList<IverksettingDag>,
     ) : this(
         id = UUID.randomUUID(),
         vedtakId = vedtakId,
         behandlingId = behandlingId,
-        virkningsdato = virkningsdato,
         vedtakstidspunkt = vedtakstidspunkt,
+        virkningsdato = virkningsdato,
         iverksettingsdager = iverksettingsdager,
     )
 
     fun id() = this.id
 
     fun accept(visitor: IverksettingVisitor) {
-        visitor.visitIverksetting(vedtakId, behandlingId, virkningsdato, vedtakstidspunkt)
+        visitor.visitIverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato)
         visitAlleIverksettingsdager(visitor)
     }
 
@@ -47,6 +47,7 @@ class Iverksetting private constructor(
                 "iverksettingId" to id.toString(),
                 "vedtakId" to vedtakId.toString(),
                 "behandlingId" to behandlingId.toString(),
+                "vedtakstidspunkt" to vedtakstidspunkt.toString(),
                 "virkningsdato" to virkningsdato.toString(),
             ),
         )
