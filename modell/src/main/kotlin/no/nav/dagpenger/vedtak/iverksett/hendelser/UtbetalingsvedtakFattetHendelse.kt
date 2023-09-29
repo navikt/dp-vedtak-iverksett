@@ -16,8 +16,8 @@ class UtbetalingsvedtakFattetHendelse(
     val sakId: String,
     val vedtakstidspunkt: LocalDateTime,
     val virkningsdato: LocalDate,
-    val utbetalingsdager: List<Utbetalingsdag>,
     val utfall: Utfall,
+    val utbetalingsdager: List<Utbetalingsdag>,
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
 

@@ -61,8 +61,8 @@ class SakInspektørTest {
             sakId = sakId.sakId,
             vedtakstidspunkt = LocalDateTime.now(),
             virkningsdato = virkningsdato,
-            utbetalingsdager = utbetalingsdager,
             utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
+            utbetalingsdager = utbetalingsdager,
         )
 
     private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double): MutableList<Utbetalingsdag> {

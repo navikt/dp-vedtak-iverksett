@@ -169,8 +169,8 @@ class ModellTest {
             sakId = sakId.sakId,
             vedtakstidspunkt = vedtakstidspunkt,
             virkningsdato = virkningsdato,
-            utbetalingsdager = utbetalingsdager,
             utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
+            utbetalingsdager = utbetalingsdager,
             aktivitetslogg = aktivitetslogg,
         )
 

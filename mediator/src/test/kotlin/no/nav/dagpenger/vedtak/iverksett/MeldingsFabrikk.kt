@@ -15,6 +15,7 @@ internal fun utbetalingsvedtakFattet(ident: String, virkningsdato: LocalDate, da
           "vedtakId": "${UUID.randomUUID()}",
           "vedtaktidspunkt": "${LocalDateTime.now()}",
           "virkningsdato": "$virkningsdato",
+          "utfall": "Innvilget",
           "utbetalingsdager": [
             {
               "dato": "${virkningsdato.minusDays(13)}",
@@ -73,7 +74,6 @@ internal fun utbetalingsvedtakFattet(ident: String, virkningsdato: LocalDate, da
               "beløp": "0.0"
             }
           ],
-          "utfall": "Innvilget",
           "@id": "418a136f-196b-45fe-8c45-76730d88ebd5",
           "@opprettet": "2023-06-15T19:24:58.050467",
           "system_read_count": 0,

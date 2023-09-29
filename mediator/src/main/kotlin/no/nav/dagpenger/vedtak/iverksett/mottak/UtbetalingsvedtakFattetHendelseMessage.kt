@@ -28,12 +28,12 @@ internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMe
             sakId = sakId,
             vedtakstidspunkt = vedtakstidspunkt,
             virkningsdato = virkningsdato,
-            utbetalingsdager = utbetalingsdager(),
             utfall = when (packet.utfall()) {
                 "Innvilget" -> UtbetalingsvedtakFattetHendelse.Utfall.Innvilget
                 "Avslått" -> UtbetalingsvedtakFattetHendelse.Utfall.Avslått
                 else -> throw IllegalArgumentException("Vet ikke om utfall ${packet.utfall()}")
             },
+            utbetalingsdager = utbetalingsdager(),
 
         )
 
