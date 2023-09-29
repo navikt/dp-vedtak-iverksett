@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utbetalingsdag
@@ -10,12 +11,12 @@ import java.time.LocalDateTime
 import java.util.UUID
 import kotlin.math.absoluteValue
 
-class SakInspektørTest {
+class IverksettDtoBuilderTest {
     private val ident = "12345678911".tilPersonIdentfikator()
     private val sakId = SakId("SAKSNUMMER_1")
     private val ukedagIdag = LocalDate.now().dayOfWeek
     private val sak = Sak(ident = ident, sakId = sakId, iverksettinger = mutableListOf())
-    private val sakInspektør get() = SakInspektør(sak)
+    private val iverksettDtoBuilder get() = IverksettDtoBuilder(sak)
 
     @Test
     fun `ForrigeBehandlingId er null for første vedtak, ved neste vedtak er forrigeBehandlingId lik første vedtaks behandlingId`() {
@@ -31,7 +32,9 @@ class SakInspektørTest {
                 utbetalingsdager = førsteVedtaksUtbetalingsdager,
             ),
         )
-        sakInspektør.forrigeBehandlingId() shouldBe null
+        val førsteIverksettDto = iverksettDtoBuilder.bygg()
+        førsteIverksettDto shouldNotBe null
+        førsteIverksettDto.forrigeIverksetting shouldBe null
 
         val andreVedtaksVirkningsdato: LocalDate =
             førsteVedtaksVirkningsdato.plusDays(førsteVedtaksUtbetalingsdager.size.toLong())
@@ -44,7 +47,9 @@ class SakInspektørTest {
                 utbetalingsdager = utbetalingsdager(andreVedtaksVirkningsdato, 633.0),
             ),
         )
-        sakInspektør.forrigeBehandlingId() shouldBe førsteVedtaksBehandlingId
+        val andreIverksettDto = iverksettDtoBuilder.bygg()
+        andreIverksettDto shouldNotBe null
+        andreIverksettDto.forrigeIverksetting!!.behandlingId shouldBe førsteVedtaksBehandlingId
     }
 
     private fun utbetalingsvedtakFattetHendelse(

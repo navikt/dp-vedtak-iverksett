@@ -14,7 +14,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-class SakInspektør(sak: Sak) : SakVisitor {
+class IverksettDtoBuilder(sak: Sak) : SakVisitor {
 
     lateinit var virkningsdato: LocalDate
     lateinit var vedtakstidspunkt: LocalDateTime
@@ -30,7 +30,7 @@ class SakInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    fun byggIverksettDto(): IverksettDto {
+    fun bygg(): IverksettDto {
         // println("SakInspektør: Bygger IverksettDto for iverksetting av vedtakId $vedtakId - behandlingId $behandlingId")
         return IverksettDto(
             saksreferanse = sakId.sakId,
@@ -56,7 +56,7 @@ class SakInspektør(sak: Sak) : SakVisitor {
         )
     }
 
-    internal fun forrigeBehandlingId(): UUID? {
+    private fun forrigeBehandlingId(): UUID? {
         val forrigeIverksetting = forrigeIverksetting()
         return if (forrigeIverksetting != null) {
             BehandlingIdVisitor(forrigeIverksetting).behandlingId
