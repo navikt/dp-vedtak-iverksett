@@ -1,5 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett
 
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,6 +18,7 @@ class BehandlingIdVisitor(iverksetting: Iverksetting) : IverksettingVisitor {
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
+        utfall: UtbetalingsvedtakFattetHendelse.Utfall,
     ) {
         this.behandlingId = behandlingId
     }

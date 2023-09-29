@@ -2,6 +2,7 @@ package no.nav.dagpenger.vedtak.iverksett
 
 import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -13,6 +14,7 @@ class Iverksetting private constructor(
     private val behandlingId: UUID,
     private val vedtakstidspunkt: LocalDateTime,
     private val virkningsdato: LocalDate,
+    private val utfall: UtbetalingsvedtakFattetHendelse.Utfall,
     private val iverksettingsdager: MutableList<IverksettingDag>,
 ) : Aktivitetskontekst, Comparable<Iverksetting> {
 
@@ -21,6 +23,7 @@ class Iverksetting private constructor(
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
+        utfall: UtbetalingsvedtakFattetHendelse.Utfall,
         iverksettingsdager: MutableList<IverksettingDag>,
     ) : this(
         id = UUID.randomUUID(),
@@ -28,13 +31,14 @@ class Iverksetting private constructor(
         behandlingId = behandlingId,
         vedtakstidspunkt = vedtakstidspunkt,
         virkningsdato = virkningsdato,
+        utfall = utfall,
         iverksettingsdager = iverksettingsdager,
     )
 
     fun id() = this.id
 
     fun accept(visitor: IverksettingVisitor) {
-        visitor.visitIverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato)
+        visitor.visitIverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, utfall)
         visitAlleIverksettingsdager(visitor)
     }
 
@@ -49,6 +53,7 @@ class Iverksetting private constructor(
                 "behandlingId" to behandlingId.toString(),
                 "vedtakstidspunkt" to vedtakstidspunkt.toString(),
                 "virkningsdato" to virkningsdato.toString(),
+                "utfall" to utfall.name,
             ),
         )
     }

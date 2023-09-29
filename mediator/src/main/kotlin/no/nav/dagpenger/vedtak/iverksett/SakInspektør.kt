@@ -8,6 +8,7 @@ import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,6 +18,7 @@ class SakInspektør(sak: Sak) : SakVisitor {
 
     lateinit var virkningsdato: LocalDate
     lateinit var vedtakstidspunkt: LocalDateTime
+    lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
     lateinit var vedtakId: UUID
     lateinit var behandlingId: UUID
     lateinit var ident: PersonIdentifikator
@@ -38,7 +40,10 @@ class SakInspektør(sak: Sak) : SakVisitor {
             vedtak = VedtaksdetaljerDto(
                 vedtakstype = VedtakType.UTBETALINGSVEDTAK,
                 vedtakstidspunkt = vedtakstidspunkt,
-                resultat = Vedtaksresultat.INNVILGET, // TODO: Må hentes ut med visitor
+                resultat = when (utfall) {
+                    UtbetalingsvedtakFattetHendelse.Utfall.Innvilget -> Vedtaksresultat.INNVILGET
+                    UtbetalingsvedtakFattetHendelse.Utfall.Avslått -> Vedtaksresultat.AVSLÅTT
+                },
                 utbetalinger = finnUtbetalingsdager(),
                 saksbehandlerId = "DIGIDAG",
                 beslutterId = "DIGIDAG",
@@ -70,12 +75,14 @@ class SakInspektør(sak: Sak) : SakVisitor {
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
+        utfall: UtbetalingsvedtakFattetHendelse.Utfall,
     ) {
         this.vedtakId = vedtakId
         this.behandlingId = behandlingId
         this.vedtakstidspunkt = vedtakstidspunkt
         this.virkningsdato = virkningsdato
-        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, mutableListOf()))
+        this.utfall = utfall
+        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, utfall, mutableListOf()))
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {

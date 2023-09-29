@@ -19,6 +19,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         sak.håndter(utbetalingsvedtakFattetHendelse) // oppdater modell basert på hendelse
         val sakInspektør = SakInspektør(sak)
         val iverksettDto = sakInspektør.byggIverksettDto()
+        println("IverksettDto: $iverksettDto")
         runBlocking {
             iverksettClient.iverksett(iverksettDto = iverksettDto)
         }

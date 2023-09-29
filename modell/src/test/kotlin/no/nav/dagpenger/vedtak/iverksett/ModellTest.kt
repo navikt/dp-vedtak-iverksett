@@ -47,6 +47,7 @@ class ModellTest {
             modellInspektør.behandlingId shouldBe førsteBehandlingId
             modellInspektør.virkningsdato shouldBe førsteVirkningsdato
             modellInspektør.vedtakstidspunkt shouldBe førsteVedtakstidspunkt
+            modellInspektør.utfall shouldBe UtbetalingsvedtakFattetHendelse.Utfall.Innvilget
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size
 
             for (i in 0 until førsteUtbetalingsdager.size) {
@@ -79,6 +80,7 @@ class ModellTest {
             modellInspektør.behandlingId shouldBe andreBehandlingId
             modellInspektør.virkningsdato shouldBe andreVirkningsdato
             modellInspektør.vedtakstidspunkt shouldBe andreVedtakstidspunkt
+            modellInspektør.utfall shouldBe UtbetalingsvedtakFattetHendelse.Utfall.Innvilget
             modellInspektør.iverksettingsdager.size shouldBe førsteUtbetalingsdager.size + andreUtbetalingsdager.size
 
             for (i in 0 until andreUtbetalingsdager.size) {

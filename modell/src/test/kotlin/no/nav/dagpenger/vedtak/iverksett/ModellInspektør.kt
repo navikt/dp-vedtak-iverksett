@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
+import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -10,6 +11,7 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
 
     lateinit var virkningsdato: LocalDate
     lateinit var vedtakstidspunkt: LocalDateTime
+    lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
     lateinit var vedtakId: UUID
     lateinit var behandlingId: UUID
     lateinit var ident: PersonIdentifikator
@@ -30,11 +32,13 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
+        utfall: UtbetalingsvedtakFattetHendelse.Utfall,
     ) {
         this.vedtakId = vedtakId
         this.behandlingId = behandlingId
         this.virkningsdato = virkningsdato
         this.vedtakstidspunkt = vedtakstidspunkt
+        this.utfall = utfall
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {
