@@ -1,4 +1,4 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client.mapper
 
 import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
@@ -7,6 +7,10 @@ import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
+import no.nav.dagpenger.vedtak.iverksett.Iverksetting
+import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
+import no.nav.dagpenger.vedtak.iverksett.Sak
+import no.nav.dagpenger.vedtak.iverksett.SakId
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
@@ -16,54 +20,42 @@ import java.util.UUID
 
 class IverksettDtoBuilder(sak: Sak) : SakVisitor {
 
-    lateinit var virkningsdato: LocalDate
-    lateinit var vedtakstidspunkt: LocalDateTime
-    lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
-    lateinit var vedtakId: UUID
-    lateinit var behandlingId: UUID
-    lateinit var ident: PersonIdentifikator
-    lateinit var sakId: SakId
-    val iverksettinger = mutableListOf<Iverksetting>()
-    val iverksettingsdager = mutableListOf<IverksettingDagKopi>()
+    private lateinit var virkningsdato: LocalDate
+    private lateinit var vedtakstidspunkt: LocalDateTime
+    private lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
+    private lateinit var vedtakId: UUID
+    private lateinit var behandlingId: UUID
+    private lateinit var ident: PersonIdentifikator
+    private lateinit var sakId: SakId
+    private val iverksettinger = mutableListOf<Iverksetting>()
+    private val iverksettingsdager = mutableListOf<IverksettingDagKopi>()
 
     init {
         sak.accept(this)
     }
 
-    fun bygg(): IverksettDto {
-        // println("SakInspektør: Bygger IverksettDto for iverksetting av vedtakId $vedtakId - behandlingId $behandlingId")
-        return IverksettDto(
-            saksreferanse = sakId.sakId,
-            behandlingId = behandlingId,
-            personIdent = ident.identifikator(),
-            forrigeIverksetting = forrigeIverksettingDto(),
-            vedtak = VedtaksdetaljerDto(
-                vedtakstype = VedtakType.UTBETALINGSVEDTAK,
-                vedtakstidspunkt = vedtakstidspunkt,
-                resultat = when (utfall) {
-                    UtbetalingsvedtakFattetHendelse.Utfall.Innvilget -> Vedtaksresultat.INNVILGET
-                    UtbetalingsvedtakFattetHendelse.Utfall.Avslått -> Vedtaksresultat.AVSLÅTT
-                },
-                utbetalinger = finnUtbetalingsdager(),
-                saksbehandlerId = "DIGIDAG",
-                beslutterId = "DIGIDAG",
-                vedtaksperioder = listOf(
-                    VedtaksperiodeDto(
-                        fraOgMedDato = virkningsdato,
-                    ),
+    fun bygg() = IverksettDto(
+        saksreferanse = sakId.sakId,
+        behandlingId = behandlingId,
+        personIdent = ident.identifikator(),
+        forrigeIverksetting = forrigeIverksettingDto(),
+        vedtak = VedtaksdetaljerDto(
+            vedtakstype = VedtakType.UTBETALINGSVEDTAK,
+            vedtakstidspunkt = vedtakstidspunkt,
+            resultat = when (utfall) {
+                UtbetalingsvedtakFattetHendelse.Utfall.Innvilget -> Vedtaksresultat.INNVILGET
+                UtbetalingsvedtakFattetHendelse.Utfall.Avslått -> Vedtaksresultat.AVSLÅTT
+            },
+            utbetalinger = finnUtbetalingsdager(),
+            saksbehandlerId = "DIGIDAG",
+            beslutterId = "DIGIDAG",
+            vedtaksperioder = listOf(
+                VedtaksperiodeDto(
+                    fraOgMedDato = virkningsdato,
                 ),
             ),
-        )
-    }
-
-    private fun forrigeBehandlingId(): UUID? {
-        val forrigeIverksetting = forrigeIverksetting()
-        return if (forrigeIverksetting != null) {
-            BehandlingIdVisitor(forrigeIverksetting).behandlingId
-        } else {
-            null
-        }
-    }
+        ),
+    )
 
     override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
         this.ident = ident
@@ -82,21 +74,43 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         this.vedtakstidspunkt = vedtakstidspunkt
         this.virkningsdato = virkningsdato
         this.utfall = utfall
-        this.iverksettinger.add(Iverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, utfall, mutableListOf()))
+        this.iverksettinger.add(
+            Iverksetting(
+                vedtakId,
+                behandlingId,
+                vedtakstidspunkt,
+                virkningsdato,
+                utfall,
+                mutableListOf(),
+            ),
+        )
     }
 
     override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {
         iverksettingsdager.add(IverksettingDagKopi(dato, beløp))
     }
 
-    private fun forrigeIverksettingDto(): ForrigeIverksettingDto? {
-        val forrigeBehandlingId = forrigeBehandlingId()
-        return if (forrigeBehandlingId != null) {
-            ForrigeIverksettingDto(behandlingId = forrigeBehandlingId)
-        } else {
-            null
+    private fun forrigeBehandlingId(): UUID? {
+        val forrigeIverksetting = forrigeIverksetting()
+        return when {
+            forrigeIverksetting != null -> BehandlingIdVisitor(forrigeIverksetting).behandlingId
+            else -> null
         }
     }
+
+    private fun forrigeIverksetting() = when {
+        iverksettinger.size > 1 -> iverksettinger.sortedDescending()[1]
+        else -> null
+    }
+
+    private fun forrigeIverksettingDto(): ForrigeIverksettingDto? {
+        val forrigeBehandlingId = forrigeBehandlingId()
+        return when {
+            forrigeBehandlingId != null -> ForrigeIverksettingDto(behandlingId = forrigeBehandlingId)
+            else -> null
+        }
+    }
+
     private fun finnUtbetalingsdager(): MutableList<UtbetalingDto> {
         val utbetalingsdagerMap = mutableMapOf<LocalDate, Double>()
         for (i in 0 until iverksettingsdager.size) {
@@ -115,16 +129,8 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
                 ),
             )
         }
-        // utbetalingsdager.forEach { utbetalingsdag -> println("dato=${utbetalingsdag.fraOgMedDato} beløp=${utbetalingsdag.belopPerDag}") }
         return utbetalingsdager
     }
-
-    private fun forrigeIverksetting() =
-        if (iverksettinger.size > 1) {
-            iverksettinger.sortedDescending()[1]
-        } else {
-            null
-        }
 
     data class IverksettingDagKopi(val dato: LocalDate, val beløp: Beløp)
 }

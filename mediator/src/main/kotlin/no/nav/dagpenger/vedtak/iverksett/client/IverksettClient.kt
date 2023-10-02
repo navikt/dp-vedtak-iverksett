@@ -25,6 +25,8 @@ import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.vedtak.iverksett.Configuration
 import org.slf4j.MDC
 
+val behandlingId = "behandlingId"
+
 internal class IverksettClient(
     private val baseUrl: String = Configuration.iverksettApiUrl,
     private val tokenProvider: () -> String,

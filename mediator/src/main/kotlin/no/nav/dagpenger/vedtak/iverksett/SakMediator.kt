@@ -3,6 +3,7 @@ package no.nav.dagpenger.vedtak.iverksett
 import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
+import no.nav.dagpenger.vedtak.iverksett.client.mapper.IverksettDtoBuilder
 import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.SakRepository
@@ -16,7 +17,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
     }
 
     private fun håndterIverksettingAv(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) = { sak: Sak ->
-        sak.håndter(utbetalingsvedtakFattetHendelse) // oppdater modell basert på hendelse
+        sak.håndter(utbetalingsvedtakFattetHendelse)
         runBlocking {
             iverksettClient.iverksett(iverksettDto = IverksettDtoBuilder(sak).bygg())
         }

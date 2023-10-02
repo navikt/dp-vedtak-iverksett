@@ -1,5 +1,6 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client.mapper
 
+import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.IverksettingVisitor
 import java.time.LocalDate
