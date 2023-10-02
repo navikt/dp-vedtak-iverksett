@@ -21,7 +21,7 @@ class UtbetalingsvedtakFattetHendelse(
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
 
-    fun mapTilIverksetting(): Iverksetting = Iverksetting(
+    fun mapTilIverksetting() = Iverksetting(
         vedtakId = vedtakId,
         behandlingId = behandlingId,
         vedtakstidspunkt = vedtakstidspunkt,

@@ -48,11 +48,11 @@ class Iverksetting private constructor(
         return SpesifikkKontekst(
             "Iverksetting",
             mapOf(
-                "iverksettingId" to id.toString(),
-                "vedtakId" to vedtakId.toString(),
-                "behandlingId" to behandlingId.toString(),
-                "vedtakstidspunkt" to vedtakstidspunkt.toString(),
-                "virkningsdato" to virkningsdato.toString(),
+                "iverksettingId" to "$id",
+                "vedtakId" to "$vedtakId",
+                "behandlingId" to "$behandlingId",
+                "vedtakstidspunkt" to "$vedtakstidspunkt",
+                "virkningsdato" to "$virkningsdato",
                 "utfall" to utfall.name,
             ),
         )
