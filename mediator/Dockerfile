@@ -21,4 +21,4 @@ COPY --from=jre-build /javaruntime $JAVA_HOME
 COPY build/install/* /
 
 USER nobody
-CMD ["dp-vedtak-iverksett"]
+CMD ["mediator"]
