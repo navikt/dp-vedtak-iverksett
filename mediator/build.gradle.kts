@@ -21,7 +21,7 @@ dependencies {
     implementation(libs.aktivitetslogg)
 
     // Kontrakter for dp-iverksett
-    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20230908143751_5a583dd")
+    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20231003162750_e8a4d05")
 
     implementation(libs.jackson.core)
     implementation(libs.jackson.datatype.jsr310)
