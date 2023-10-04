@@ -17,7 +17,6 @@ class Iverksetting private constructor(
     private val utfall: UtbetalingsvedtakFattetHendelse.Utfall,
     private val iverksettingsdager: MutableList<IverksettingDag>,
 ) : Aktivitetskontekst, Comparable<Iverksetting> {
-
     constructor(
         vedtakId: UUID,
         behandlingId: UUID,

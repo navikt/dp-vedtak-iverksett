@@ -32,33 +32,34 @@ internal class IverksettClient(
     private val tokenProvider: () -> String,
     engine: HttpClientEngine = CIO.create {},
 ) {
-
     private companion object {
         val sikkerLogg = KotlinLogging.logger("tjenestekall.IverksettClient")
     }
 
-    private val httpClient = HttpClient(engine) {
-        expectSuccess = true
+    private val httpClient =
+        HttpClient(engine) {
+            expectSuccess = true
 
-        defaultRequest {
-            header(HttpHeaders.Authorization, "Bearer ${tokenProvider.invoke()}")
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            defaultRequest {
+                header(HttpHeaders.Authorization, "Bearer ${tokenProvider.invoke()}")
             }
-        }
-        install(Logging) {
-            level = LogLevel.ALL
-            logger = object : Logger {
-                override fun log(message: String) {
-                    sikkerLogg.info(message)
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
                 }
             }
-            sanitizeHeader { header -> header == HttpHeaders.Authorization }
+            install(Logging) {
+                level = LogLevel.ALL
+                logger =
+                    object : Logger {
+                        override fun log(message: String) {
+                            sikkerLogg.info(message)
+                        }
+                    }
+                sanitizeHeader { header -> header == HttpHeaders.Authorization }
+            }
         }
-    }
 
     suspend fun iverksett(iverksettDto: IverksettDto) {
         val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()

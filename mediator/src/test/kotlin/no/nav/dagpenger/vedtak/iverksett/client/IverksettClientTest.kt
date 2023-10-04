@@ -18,54 +18,59 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 internal class IverksettClientTest {
-
     private val tokenProvider = { "token" }
 
     @Test
-    fun `iverksett clienten svarer 202`() = runBlocking {
-        val mockEngine = mockEngine(202)
-        val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
-        client.iverksett(
-            iverksettDagpengerdDtoDummy(),
-        )
-    }
+    fun `iverksett clienten svarer 202`() =
+        runBlocking {
+            val mockEngine = mockEngine(202)
+            val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
+            client.iverksett(
+                iverksettDagpengerdDtoDummy(),
+            )
+        }
 
     @Test
-    fun `Om iverksett clienten svarer med 4xx og 5xx status resulterer det i exception`() = runBlocking {
-        (399 until 599).forEach { statusCode ->
-            val mockEngine = mockEngine(statusCode)
-            val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
-            assertThrows<RuntimeException> {
-                runBlocking {
-                    client.iverksett(
-                        iverksettDagpengerdDtoDummy(),
-                    )
+    fun `Om iverksett clienten svarer med 4xx og 5xx status resulterer det i exception`() =
+        runBlocking {
+            (399 until 599).forEach { statusCode ->
+                val mockEngine = mockEngine(statusCode)
+                val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
+                assertThrows<RuntimeException> {
+                    runBlocking {
+                        client.iverksett(
+                            iverksettDagpengerdDtoDummy(),
+                        )
+                    }
                 }
             }
         }
-    }
 
-    private fun iverksettDagpengerdDtoDummy(): IverksettDto = IverksettDto(
-        sakId = UUID.randomUUID(),
-        behandlingId = UUID.randomUUID(),
-        personIdent = "12345678901",
-        vedtak = VedtaksdetaljerDto(
-            vedtakstype = VedtakType.UTBETALINGSVEDTAK,
-            vedtakstidspunkt = LocalDateTime.now(),
-            resultat = Vedtaksresultat.INNVILGET,
-            saksbehandlerId = "DIGIDAG",
-            beslutterId = "DIGIDAG",
-            vedtaksperioder = listOf(
-                VedtaksperiodeDto(
-                    fraOgMedDato = LocalDate.now(),
+    private fun iverksettDagpengerdDtoDummy(): IverksettDto =
+        IverksettDto(
+            sakId = UUID.randomUUID(),
+            behandlingId = UUID.randomUUID(),
+            personIdent = "12345678901",
+            vedtak =
+                VedtaksdetaljerDto(
+                    vedtakstype = VedtakType.UTBETALINGSVEDTAK,
+                    vedtakstidspunkt = LocalDateTime.now(),
+                    resultat = Vedtaksresultat.INNVILGET,
+                    saksbehandlerId = "DIGIDAG",
+                    beslutterId = "DIGIDAG",
+                    vedtaksperioder =
+                        listOf(
+                            VedtaksperiodeDto(
+                                fraOgMedDato = LocalDate.now(),
+                            ),
+                        ),
                 ),
-            ),
-        ),
-    )
+        )
 
-    private fun mockEngine(statusCode: Int) = MockEngine { request ->
-        request.headers[HttpHeaders.Accept] shouldBe "application/json"
-        request.headers[HttpHeaders.Authorization] shouldBe "Bearer ${tokenProvider.invoke()}"
-        respond(content = "", HttpStatusCode.fromValue(statusCode))
-    }
+    private fun mockEngine(statusCode: Int) =
+        MockEngine { request ->
+            request.headers[HttpHeaders.Accept] shouldBe "application/json"
+            request.headers[HttpHeaders.Authorization] shouldBe "Bearer ${tokenProvider.invoke()}"
+            respond(content = "", HttpStatusCode.fromValue(statusCode))
+        }
 }

@@ -12,7 +12,6 @@ internal class UtbetalingsvedtakFattetMottak(
     rapidsConnection: RapidsConnection,
     private val hendelseMediator: HendelseMediator,
 ) : River.PacketListener {
-
     private companion object {
         val logger = KotlinLogging.logger { }
         val sikkerlogger = KotlinLogging.logger("tjenestekall.VedtakFattetMottak")
@@ -37,7 +36,10 @@ internal class UtbetalingsvedtakFattetMottak(
         }.register(this)
     }
 
-    override fun onPacket(packet: JsonMessage, context: MessageContext) {
+    override fun onPacket(
+        packet: JsonMessage,
+        context: MessageContext,
+    ) {
         val vedtakId = packet["vedtakId"].asText()
         val behandlingId = packet["behandlingId"].asText()
         withLoggingContext(mapOf("vedtakId" to vedtakId, "behandlingId" to behandlingId)) {

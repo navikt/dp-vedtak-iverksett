@@ -20,26 +20,26 @@ class UtbetalingsvedtakFattetHendelse(
     val utbetalingsdager: List<Utbetalingsdag>,
     aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
 ) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
-
-    fun mapTilIverksetting() = Iverksetting(
-        vedtakId = vedtakId,
-        behandlingId = behandlingId,
-        vedtakstidspunkt = vedtakstidspunkt,
-        virkningsdato = virkningsdato,
-        utfall = utfall,
-        iverksettingsdager = mapTilIverksettingsdager(utbetalingsdager),
-    )
+    fun mapTilIverksetting() =
+        Iverksetting(
+            vedtakId = vedtakId,
+            behandlingId = behandlingId,
+            vedtakstidspunkt = vedtakstidspunkt,
+            virkningsdato = virkningsdato,
+            utfall = utfall,
+            iverksettingsdager = mapTilIverksettingsdager(utbetalingsdager),
+        )
 
     private fun mapTilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
         utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp(it.beløp)) }
             .toMutableList()
 
     data class Utbetalingsdag(val dato: LocalDate, val beløp: Double)
+
     enum class Utfall {
         Innvilget,
         Avslått,
     }
 
-    override fun kontekstMap(): Map<String, String> =
-        mapOf("vedtakId" to vedtakId.toString(), "behandlingId" to behandlingId.toString())
+    override fun kontekstMap(): Map<String, String> = mapOf("vedtakId" to vedtakId.toString(), "behandlingId" to behandlingId.toString())
 }

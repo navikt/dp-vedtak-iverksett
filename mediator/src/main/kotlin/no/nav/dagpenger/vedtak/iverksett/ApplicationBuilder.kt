@@ -9,14 +9,14 @@ import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 
 internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnection.StatusListener {
-
     companion object {
         private val logger = KotlinLogging.logger { }
     }
 
-    private val rapidsConnection = RapidApplication.Builder(
-        RapidApplication.RapidApplicationConfig.fromEnv(config),
-    ).build()
+    private val rapidsConnection =
+        RapidApplication.Builder(
+            RapidApplication.RapidApplicationConfig.fromEnv(config),
+        ).build()
 
     init {
         rapidsConnection.register(this)
@@ -24,11 +24,12 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
         HendelseMediator(
             rapidsConnection = rapidsConnection,
             hendelseRepository = InMemoryMeldingRepository(),
-            sakMediator = SakMediator(
-                sakRepository = InMemorySakRepository(),
-                iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
-                // behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
-            ),
+            sakMediator =
+                SakMediator(
+                    sakRepository = InMemorySakRepository(),
+                    iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
+                    // behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
+                ),
         )
     }
 

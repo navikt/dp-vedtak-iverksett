@@ -11,20 +11,21 @@ import no.nav.dagpenger.oauth2.CachedOauth2Client
 import no.nav.dagpenger.oauth2.OAuth2Config
 
 internal object Configuration {
-
-    private val defaultProperties = ConfigurationMap(
-        mapOf(
-            "RAPID_APP_NAME" to "dp-vedtak-iverksett",
-            "KAFKA_CONSUMER_GROUP_ID" to "dp-vedtak-iverksett-v1",
-            "KAFKA_RAPID_TOPIC" to "teamdagpenger.rapid.v1",
-            "KAFKA_RESET_POLICY" to "latest",
-        ),
-    )
+    private val defaultProperties =
+        ConfigurationMap(
+            mapOf(
+                "RAPID_APP_NAME" to "dp-vedtak-iverksett",
+                "KAFKA_CONSUMER_GROUP_ID" to "dp-vedtak-iverksett-v1",
+                "KAFKA_RAPID_TOPIC" to "teamdagpenger.rapid.v1",
+                "KAFKA_RESET_POLICY" to "latest",
+            ),
+        )
     private val properties = ConfigurationProperties.systemProperties() overriding EnvironmentVariables() overriding defaultProperties
 
-    val config: Map<String, String> = properties.list().reversed().fold(emptyMap()) { map, pair ->
-        map + pair.second
-    }
+    val config: Map<String, String> =
+        properties.list().reversed().fold(emptyMap()) { map, pair ->
+            map + pair.second
+        }
 
     private val azureAdClient: CachedOauth2Client by lazy {
         val azureAdConfig = OAuth2Config.AzureAd(config)

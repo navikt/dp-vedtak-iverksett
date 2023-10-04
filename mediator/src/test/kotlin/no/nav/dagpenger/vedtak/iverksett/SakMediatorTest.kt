@@ -16,7 +16,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class SakMediatorTest {
-
     private val testRapid = TestRapid()
     private val førsteVirkningsdato = LocalDate.now().minusDays(14)
     private val ident = "12345123451"

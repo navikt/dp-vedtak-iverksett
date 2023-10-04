@@ -16,14 +16,18 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         )
     }
 
-    private fun håndterIverksettingAv(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) = { sak: Sak ->
-        sak.håndter(utbetalingsvedtakFattetHendelse)
-        runBlocking {
-            iverksettClient.iverksett(iverksettDto = IverksettDtoBuilder(sak).bygg())
+    private fun håndterIverksettingAv(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) =
+        { sak: Sak ->
+            sak.håndter(utbetalingsvedtakFattetHendelse)
+            runBlocking {
+                iverksettClient.iverksett(iverksettDto = IverksettDtoBuilder(sak).bygg())
+            }
         }
-    }
 
-    private fun håndter(hendelse: Hendelse, håndter: (Sak) -> Unit) {
+    private fun håndter(
+        hendelse: Hendelse,
+        håndter: (Sak) -> Unit,
+    ) {
         try {
             val sak = hentEllerOpprettSak(hendelse)
             håndter(sak)
@@ -44,12 +48,13 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
 
     private fun hentEllerOpprettSak(hendelse: Hendelse): Sak {
         return when (hendelse) {
-            is UtbetalingsvedtakFattetHendelse -> sakRepository.hent(SakId(hendelse.sakId))
-                ?: Sak(
-                    ident = PersonIdentifikator(hendelse.ident()),
-                    sakId = SakId(hendelse.sakId),
-                    iverksettinger = mutableListOf(),
-                )
+            is UtbetalingsvedtakFattetHendelse ->
+                sakRepository.hent(SakId(hendelse.sakId))
+                    ?: Sak(
+                        ident = PersonIdentifikator(hendelse.ident()),
+                        sakId = SakId(hendelse.sakId),
+                        iverksettinger = mutableListOf(),
+                    )
 
             else -> {
                 TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")

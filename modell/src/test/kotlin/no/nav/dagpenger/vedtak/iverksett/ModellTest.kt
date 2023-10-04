@@ -13,7 +13,6 @@ import java.util.UUID
 import kotlin.math.absoluteValue
 
 class ModellTest {
-
     private val ident = "12345678911".tilPersonIdentfikator()
     private val sakId = SakId("SAKSNUMMER_1")
     private val ukedagIdag = LocalDate.now().dayOfWeek
@@ -162,21 +161,23 @@ class ModellTest {
         vedtakstidspunkt: LocalDateTime,
         utbetalingsdager: List<Utbetalingsdag>,
         aktivitetslogg: Aktivitetslogg,
-    ) =
-        UtbetalingsvedtakFattetHendelse(
-            meldingsreferanseId = UUID.randomUUID(),
-            ident = ident.identifikator(),
-            vedtakId = vedtakId,
-            behandlingId = behandlingId,
-            sakId = sakId.sakId,
-            vedtakstidspunkt = vedtakstidspunkt,
-            virkningsdato = virkningsdato,
-            utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
-            utbetalingsdager = utbetalingsdager,
-            aktivitetslogg = aktivitetslogg,
-        )
+    ) = UtbetalingsvedtakFattetHendelse(
+        meldingsreferanseId = UUID.randomUUID(),
+        ident = ident.identifikator(),
+        vedtakId = vedtakId,
+        behandlingId = behandlingId,
+        sakId = sakId.sakId,
+        vedtakstidspunkt = vedtakstidspunkt,
+        virkningsdato = virkningsdato,
+        utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
+        utbetalingsdager = utbetalingsdager,
+        aktivitetslogg = aktivitetslogg,
+    )
 
-    private fun utbetalingsdager(virkningsdato: LocalDate, dagsbeløp: Double): MutableList<Utbetalingsdag> {
+    private fun utbetalingsdager(
+        virkningsdato: LocalDate,
+        dagsbeløp: Double,
+    ): MutableList<Utbetalingsdag> {
         val utbetalingsdager = mutableListOf<Utbetalingsdag>()
 
         for (i in -13..0) {

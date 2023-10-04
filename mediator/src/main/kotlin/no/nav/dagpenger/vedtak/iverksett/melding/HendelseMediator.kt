@@ -11,12 +11,14 @@ internal class HendelseMediator(
     private val sakMediator: SakMediator,
     private val hendelseRepository: HendelseRepository,
 ) {
-
     init {
         UtbetalingsvedtakFattetMottak(rapidsConnection, this)
     }
 
-    fun behandle(hendelse: UtbetalingsvedtakFattetHendelse, message: UtbetalingsvedtakFattetHendelseMessage) {
+    fun behandle(
+        hendelse: UtbetalingsvedtakFattetHendelse,
+        message: UtbetalingsvedtakFattetHendelseMessage,
+    ) {
         message.lagreMelding(hendelseRepository)
         sakMediator.håndter(hendelse)
         hendelseRepository.markerSomBehandlet(message.id)

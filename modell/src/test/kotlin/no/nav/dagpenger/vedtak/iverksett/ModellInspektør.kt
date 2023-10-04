@@ -8,7 +8,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 internal class ModellInspektør(sak: Sak) : SakVisitor {
-
     lateinit var virkningsdato: LocalDate
     lateinit var vedtakstidspunkt: LocalDateTime
     lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
@@ -22,7 +21,10 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
+    override fun visitSak(
+        ident: PersonIdentifikator,
+        sakId: SakId,
+    ) {
         this.ident = ident
         this.sakId = sakId
     }
@@ -41,7 +43,10 @@ internal class ModellInspektør(sak: Sak) : SakVisitor {
         this.utfall = utfall
     }
 
-    override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {
+    override fun visitIverksettingDag(
+        dato: LocalDate,
+        beløp: Beløp,
+    ) {
         iverksettingsdager.add(IverksettingDagKopi(dato, beløp))
     }
 }

@@ -19,7 +19,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class IverksettDtoBuilder(sak: Sak) : SakVisitor {
-
     private lateinit var virkningsdato: LocalDate
     private lateinit var vedtakstidspunkt: LocalDateTime
     private lateinit var utfall: UtbetalingsvedtakFattetHendelse.Utfall
@@ -34,30 +33,37 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    fun bygg() = IverksettDto(
-        saksreferanse = sakId.sakId,
-        behandlingId = behandlingId,
-        personIdent = ident.identifikator(),
-        forrigeIverksetting = forrigeIverksettingDto(),
-        vedtak = VedtaksdetaljerDto(
-            vedtakstype = VedtakType.UTBETALINGSVEDTAK,
-            vedtakstidspunkt = vedtakstidspunkt,
-            resultat = when (utfall) {
-                UtbetalingsvedtakFattetHendelse.Utfall.Innvilget -> Vedtaksresultat.INNVILGET
-                UtbetalingsvedtakFattetHendelse.Utfall.Avslått -> Vedtaksresultat.AVSLÅTT
-            },
-            utbetalinger = finnUtbetalingsdager(),
-            saksbehandlerId = "DIGIDAG",
-            beslutterId = "DIGIDAG",
-            vedtaksperioder = listOf(
-                VedtaksperiodeDto(
-                    fraOgMedDato = virkningsdato,
+    fun bygg() =
+        IverksettDto(
+            saksreferanse = sakId.sakId,
+            behandlingId = behandlingId,
+            personIdent = ident.identifikator(),
+            forrigeIverksetting = forrigeIverksettingDto(),
+            vedtak =
+                VedtaksdetaljerDto(
+                    vedtakstype = VedtakType.UTBETALINGSVEDTAK,
+                    vedtakstidspunkt = vedtakstidspunkt,
+                    resultat =
+                        when (utfall) {
+                            UtbetalingsvedtakFattetHendelse.Utfall.Innvilget -> Vedtaksresultat.INNVILGET
+                            UtbetalingsvedtakFattetHendelse.Utfall.Avslått -> Vedtaksresultat.AVSLÅTT
+                        },
+                    utbetalinger = finnUtbetalingsdager(),
+                    saksbehandlerId = "DIGIDAG",
+                    beslutterId = "DIGIDAG",
+                    vedtaksperioder =
+                        listOf(
+                            VedtaksperiodeDto(
+                                fraOgMedDato = virkningsdato,
+                            ),
+                        ),
                 ),
-            ),
-        ),
-    )
+        )
 
-    override fun visitSak(ident: PersonIdentifikator, sakId: SakId) {
+    override fun visitSak(
+        ident: PersonIdentifikator,
+        sakId: SakId,
+    ) {
         this.ident = ident
         this.sakId = sakId
     }
@@ -86,7 +92,10 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         )
     }
 
-    override fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {
+    override fun visitIverksettingDag(
+        dato: LocalDate,
+        beløp: Beløp,
+    ) {
         iverksettingsdager.add(IverksettingDagKopi(dato, beløp))
     }
 
@@ -98,10 +107,11 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         }
     }
 
-    private fun forrigeIverksetting() = when {
-        iverksettinger.size > 1 -> iverksettinger.sortedDescending()[1]
-        else -> null
-    }
+    private fun forrigeIverksetting() =
+        when {
+            iverksettinger.size > 1 -> iverksettinger.sortedDescending()[1]
+            else -> null
+        }
 
     private fun forrigeIverksettingDto(): ForrigeIverksettingDto? {
         val forrigeBehandlingId = forrigeBehandlingId()

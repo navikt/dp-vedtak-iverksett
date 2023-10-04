@@ -5,5 +5,8 @@ import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import java.time.LocalDate
 
 interface IverksettingDagVisitor : AktivitetsloggVisitor {
-    fun visitIverksettingDag(dato: LocalDate, beløp: Beløp) {}
+    fun visitIverksettingDag(
+        dato: LocalDate,
+        beløp: Beløp,
+    ) {}
 }

@@ -9,7 +9,6 @@ import no.nav.helse.rapids_rivers.asLocalDate
 import no.nav.helse.rapids_rivers.asLocalDateTime
 
 internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMessage) : HendelseMessage(packet) {
-
     override val ident: String
         get() = packet["ident"].asText()
 
@@ -20,32 +19,38 @@ internal class UtbetalingsvedtakFattetHendelseMessage(private val packet: JsonMe
     private val virkningsdato = packet["virkningsdato"].asLocalDate()
 
     private val hendelse: UtbetalingsvedtakFattetHendelse
-        get() = UtbetalingsvedtakFattetHendelse(
-            meldingsreferanseId = id,
-            ident = ident,
-            vedtakId = vedtakId,
-            behandlingId = behandlingId,
-            sakId = sakId,
-            vedtakstidspunkt = vedtakstidspunkt,
-            virkningsdato = virkningsdato,
-            utfall = when (packet.utfall()) {
-                "Innvilget" -> UtbetalingsvedtakFattetHendelse.Utfall.Innvilget
-                "Avslått" -> UtbetalingsvedtakFattetHendelse.Utfall.Avslått
-                else -> throw IllegalArgumentException("Vet ikke om utfall ${packet.utfall()}")
-            },
-            utbetalingsdager = utbetalingsdager(),
-
-        )
+        get() =
+            UtbetalingsvedtakFattetHendelse(
+                meldingsreferanseId = id,
+                ident = ident,
+                vedtakId = vedtakId,
+                behandlingId = behandlingId,
+                sakId = sakId,
+                vedtakstidspunkt = vedtakstidspunkt,
+                virkningsdato = virkningsdato,
+                utfall =
+                    when (packet.utfall()) {
+                        "Innvilget" -> UtbetalingsvedtakFattetHendelse.Utfall.Innvilget
+                        "Avslått" -> UtbetalingsvedtakFattetHendelse.Utfall.Avslått
+                        else -> throw IllegalArgumentException("Vet ikke om utfall ${packet.utfall()}")
+                    },
+                utbetalingsdager = utbetalingsdager(),
+            )
 
     private fun JsonMessage.utfall(): String = this["utfall"].asText()
-    private fun utbetalingsdager() = packet["utbetalingsdager"].map { utbetalingsdagJson ->
-        UtbetalingsvedtakFattetHendelse.Utbetalingsdag(
-            dato = utbetalingsdagJson["dato"].asLocalDate(),
-            beløp = utbetalingsdagJson["beløp"].asDouble(),
-        )
-    }.toList()
 
-    override fun behandle(mediator: HendelseMediator, context: MessageContext) {
+    private fun utbetalingsdager() =
+        packet["utbetalingsdager"].map { utbetalingsdagJson ->
+            UtbetalingsvedtakFattetHendelse.Utbetalingsdag(
+                dato = utbetalingsdagJson["dato"].asLocalDate(),
+                beløp = utbetalingsdagJson["beløp"].asDouble(),
+            )
+        }.toList()
+
+    override fun behandle(
+        mediator: HendelseMediator,
+        context: MessageContext,
+    ) {
         mediator.behandle(hendelse, this)
     }
 }
