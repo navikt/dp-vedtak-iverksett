@@ -41,6 +41,9 @@ dependencies {
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
 
+    implementation(libs.bundles.database)
+
+    testImplementation(libs.testcontainer.postgresql)
     testImplementation(libs.ktor.client.mock)
     testImplementation("io.kotest:kotest-assertions-core-jvm:${libs.versions.kotest.get()}")
 

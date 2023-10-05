@@ -1,4 +1,4 @@
-package no.nav.dagpenger.vedtak.iverksett.db
+package no.nav.dagpenger.vedtak.iverksett.persistens
 
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMessage
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseRepository

@@ -37,6 +37,13 @@ urnlib = { group = "de.slub-dresden", name = "urnlib", version = "2.0.1" }
 rapids-and-rivers = { group = "com.github.navikt", name = "rapids-and-rivers", version = "2023050308441683096263.f5a276d7bd28" }
 kotlin-logging = { group = "io.github.microutils", name = "kotlin-logging", version = "3.0.5" }
 
+# Database
+flyway = { group = "org.flywaydb", name = "flyway-core", version = "9.22.2" }
+hikari = { group = "com.zaxxer", name = "HikariCP", version = "5.0.1" }
+kotlinquery = { group = "com.github.seratch", name = "kotliquery", version = "1.9.0" }
+postgresql-driver = { group = "org.postgresql", name = "postgresql", version = "42.6.0" }
+testcontainer-postgresql = { group = "org.testcontainers", name = "postgresql", version = "1.19.1" }
+
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version = "6.22.0" }
@@ -45,4 +52,5 @@ shadow = { id = "com.github.johnrengelman.shadow", version = "8.1.1" }
 [bundles]
 ktor-server = ["ktor-server", "ktor-server-auth-jvm", "ktor-server-content-negotiation", "ktor-serialization-jackson", "ktor-server-logging-jvm", "jackson-datatype-jsr310"]
 jackson = ["jackson-core", "jackson-datatype-jsr310", "jackson-annotation", "jackson-module-kotlin"]
+database = ["flyway", "hikari", "kotlinquery", "postgresql-driver"]
 
