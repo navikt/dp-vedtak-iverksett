@@ -1,11 +1,9 @@
 package no.nav.dagpenger.vedtak.iverksett
 
 import io.kotest.matchers.shouldNotBe
-import io.mockk.Runs
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.just
+import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
@@ -38,7 +36,7 @@ class SakMediatorTest {
 
     @Test
     fun `Hver hendelse om fattet utbetalingsvedtak fører til en iverksetting`() {
-        coEvery { iverksettClientMock.iverksett(any()) } just Runs
+        every { iverksettClientMock.iverksett(any()) }.returns(mockk())
 
         testRapid.sendTestMessage(
             utbetalingsvedtakFattet(
@@ -49,7 +47,7 @@ class SakMediatorTest {
             ),
         )
 
-        coVerify(exactly = 1) {
+        verify(exactly = 1) {
             iverksettClientMock.iverksett(any())
         }
 
@@ -64,7 +62,7 @@ class SakMediatorTest {
             ),
         )
 
-        coVerify(exactly = 2) {
+        verify(exactly = 2) {
             iverksettClientMock.iverksett(any())
         }
 

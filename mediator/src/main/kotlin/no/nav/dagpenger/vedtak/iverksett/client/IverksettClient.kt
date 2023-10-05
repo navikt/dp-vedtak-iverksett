@@ -19,6 +19,7 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
@@ -61,15 +62,16 @@ internal class IverksettClient(
             }
         }
 
-    suspend fun iverksett(iverksettDto: IverksettDto) {
-        val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()
-        withContext(Dispatchers.IO) {
-            httpClient.post(url) {
-                header("nav-call-id", MDC.get(behandlingId))
-                header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
-                setBody(iverksettDto)
+    fun iverksett(iverksettDto: IverksettDto) =
+        runBlocking {
+            val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()
+            withContext(Dispatchers.IO) {
+                httpClient.post(url) {
+                    header("nav-call-id", MDC.get(behandlingId))
+                    header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
+                    header(HttpHeaders.ContentType, ContentType.Application.Json)
+                    setBody(iverksettDto)
+                }
             }
         }
-    }
 }

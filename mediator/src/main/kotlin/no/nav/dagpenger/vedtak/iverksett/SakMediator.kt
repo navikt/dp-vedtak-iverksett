@@ -1,6 +1,5 @@
 package no.nav.dagpenger.vedtak.iverksett
 
-import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.client.mapper.IverksettDtoBuilder
@@ -8,28 +7,11 @@ import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendel
 import no.nav.dagpenger.vedtak.iverksett.persistens.SakRepository
 
 internal class SakMediator(private val sakRepository: SakRepository, private val iverksettClient: IverksettClient) {
-    fun håndter(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) {
-        håndter(
-            hendelse = utbetalingsvedtakFattetHendelse,
-            håndter = håndterIverksettingAv(utbetalingsvedtakFattetHendelse),
-        )
-    }
-
-    private fun håndterIverksettingAv(utbetalingsvedtakFattetHendelse: UtbetalingsvedtakFattetHendelse) =
-        { sak: Sak ->
-            sak.håndter(utbetalingsvedtakFattetHendelse)
-            runBlocking {
-                iverksettClient.iverksett(iverksettDto = IverksettDtoBuilder(sak).bygg())
-            }
-        }
-
-    private fun håndter(
-        hendelse: UtbetalingsvedtakFattetHendelse,
-        håndter: (Sak) -> Unit,
-    ) {
+    fun håndter(hendelse: UtbetalingsvedtakFattetHendelse) {
         try {
             val sak = hentEllerOpprettSak(hendelse)
-            håndter(sak)
+            sak.håndter(hendelse)
+            iverksettClient.iverksett(iverksettDto = IverksettDtoBuilder(sak).bygg())
             sakRepository.lagre(sak)
         } catch (err: Aktivitetslogg.AktivitetException) {
             println("Oups aktivitetException! Feil ved håndtering av hendelse")
