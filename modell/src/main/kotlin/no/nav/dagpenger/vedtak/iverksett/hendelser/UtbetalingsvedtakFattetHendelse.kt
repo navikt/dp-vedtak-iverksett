@@ -1,6 +1,9 @@
 package no.nav.dagpenger.vedtak.iverksett.hendelser
 
+import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
+import no.nav.dagpenger.aktivitetslogg.IAktivitetslogg
+import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.IverksettingDag
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
@@ -9,8 +12,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class UtbetalingsvedtakFattetHendelse(
-    meldingsreferanseId: UUID,
-    ident: String,
+    private val meldingsreferanseId: UUID,
+    private val ident: String,
     val vedtakId: UUID,
     val behandlingId: UUID,
     val sakId: String,
@@ -18,8 +21,12 @@ class UtbetalingsvedtakFattetHendelse(
     val virkningsdato: LocalDate,
     val utfall: Utfall,
     val utbetalingsdager: List<Utbetalingsdag>,
-    aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
-) : Hendelse(meldingsreferanseId, ident, aktivitetslogg) {
+    internal val aktivitetslogg: Aktivitetslogg = Aktivitetslogg(),
+) : Aktivitetskontekst, IAktivitetslogg by aktivitetslogg {
+    fun meldingsreferanseId() = meldingsreferanseId
+
+    fun ident() = ident
+
     fun mapTilIverksetting() =
         Iverksetting(
             vedtakId = vedtakId,
@@ -41,5 +48,14 @@ class UtbetalingsvedtakFattetHendelse(
         Avslått,
     }
 
-    override fun kontekstMap(): Map<String, String> = mapOf("vedtakId" to vedtakId.toString(), "behandlingId" to behandlingId.toString())
+    override fun toSpesifikkKontekst() =
+        SpesifikkKontekst(
+            kontekstType = this.javaClass.simpleName,
+            kontekstMap =
+                mapOf(
+                    "ident" to ident,
+                    "vedtakId" to vedtakId.toString(),
+                    "behandlingId" to behandlingId.toString(),
+                ),
+        )
 }

@@ -4,7 +4,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.client.mapper.IverksettDtoBuilder
-import no.nav.dagpenger.vedtak.iverksett.hendelser.Hendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.SakRepository
 
@@ -25,7 +24,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         }
 
     private fun håndter(
-        hendelse: Hendelse,
+        hendelse: UtbetalingsvedtakFattetHendelse,
         håndter: (Sak) -> Unit,
     ) {
         try {
@@ -35,9 +34,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         } catch (err: Aktivitetslogg.AktivitetException) {
             println("Oups aktivitetException! Feil ved håndtering av hendelse")
             //        SakMediator.logger.error("alvorlig feil i aktivitetslogg (se sikkerlogg for detaljer)")
-            //        withMDC(err.kontekst()) {
-            //            IverksettingMediator.sikkerLogger.error("alvorlig feil i aktivitetslogg: ${err.message}", err)
-            //        }
+            //        withMDC(err.kontekst()) { }
             throw err
         } catch (e: Exception) {
             //        errorHandler(e, e.message ?: "Ukjent feil")
@@ -46,24 +43,15 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
         }
     }
 
-    private fun hentEllerOpprettSak(hendelse: Hendelse): Sak {
-        return when (hendelse) {
-            is UtbetalingsvedtakFattetHendelse ->
-                sakRepository.hent(SakId(hendelse.sakId))
-                    ?: Sak(
-                        ident = PersonIdentifikator(hendelse.ident()),
-                        sakId = SakId(hendelse.sakId),
-                        iverksettinger = mutableListOf(),
-                    )
-
-            else -> {
-                TODO("Støtter bare UtbetalingsvedtakFattetHendelse pt")
-            }
-        }
-    }
+    private fun hentEllerOpprettSak(hendelse: UtbetalingsvedtakFattetHendelse) =
+        sakRepository.hent(SakId(hendelse.sakId)) ?: Sak(
+            ident = PersonIdentifikator(hendelse.ident()),
+            sakId = SakId(hendelse.sakId),
+            iverksettinger = mutableListOf(),
+        )
+}
 
 //    private fun errorHandler(err: Exception, message: String, context: Map<String, String> = emptyMap()) {
 //        SakMediator.logger.error("alvorlig feil: ${err.message} (se sikkerlogg for melding)", err)
 //        withMDC(context) { SakMediator.sikkerLogger.error("alvorlig feil: ${err.message}\n\t$message", err) }
 //    }
-}
