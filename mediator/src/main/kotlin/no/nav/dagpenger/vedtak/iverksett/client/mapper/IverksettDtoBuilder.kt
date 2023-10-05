@@ -5,7 +5,6 @@ import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
-import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
@@ -51,12 +50,6 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
                     utbetalinger = finnUtbetalingsdager(),
                     saksbehandlerId = "DIGIDAG",
                     beslutterId = "DIGIDAG",
-                    vedtaksperioder =
-                        listOf(
-                            VedtaksperiodeDto(
-                                fraOgMedDato = virkningsdato,
-                            ),
-                        ),
                 ),
         )
 
