@@ -28,7 +28,6 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
                 SakMediator(
                     sakRepository = InMemorySakRepository(),
                     iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
-                    // behovMediator = BehovMediator(rapidsConnection, KotlinLogging.logger("tjenestekall.BehovMediator")),
                 ),
         )
     }

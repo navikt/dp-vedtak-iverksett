@@ -46,7 +46,7 @@ internal class IverksettClientTest {
             }
         }
 
-    private fun iverksettDagpengerdDtoDummy(): IverksettDto =
+    private fun iverksettDagpengerdDtoDummy() =
         IverksettDto(
             sakId = UUID.randomUUID(),
             behandlingId = UUID.randomUUID(),
