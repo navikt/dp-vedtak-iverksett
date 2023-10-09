@@ -115,18 +115,12 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
     }
 
     private fun finnUtbetalingsdager(): MutableList<UtbetalingDto> {
-        val utbetalingsdagerMap = mutableMapOf<LocalDate, Double>()
-        for (i in 0 until iverksettingsdager.size) {
-            utbetalingsdagerMap.put(
-                iverksettingsdager[i].dato,
-                iverksettingsdager[i].beløp.verdi,
-            )
-        }
+        val utbetalingsdagerMap = iverksettingsdager.associateBy { iverksettingsdag -> iverksettingsdag.dato }
         val utbetalingsdager = mutableListOf<UtbetalingDto>()
         utbetalingsdagerMap.forEach { entry ->
             utbetalingsdager.add(
                 UtbetalingDto(
-                    belopPerDag = entry.value.toInt(),
+                    belopPerDag = entry.value.beløp.verdi.toInt(),
                     fraOgMedDato = entry.key,
                     tilOgMedDato = entry.key,
                 ),
