@@ -46,11 +46,9 @@ class SakMediatorTest {
                 sakId = SakId(sakId),
             ),
         )
-
         verify(exactly = 1) {
             iverksettClientMock.iverksett(any())
         }
-
         sakRepository.hent(SakId(sakId)) shouldNotBe null
 
         testRapid.sendTestMessage(
@@ -61,11 +59,9 @@ class SakMediatorTest {
                 sakId = SakId(sakId),
             ),
         )
-
         verify(exactly = 2) {
             iverksettClientMock.iverksett(any())
         }
-
         sakRepository.hent(SakId(sakId)) shouldNotBe null
     }
 }

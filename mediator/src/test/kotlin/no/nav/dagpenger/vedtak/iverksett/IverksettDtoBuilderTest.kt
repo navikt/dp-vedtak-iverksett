@@ -7,6 +7,7 @@ import no.nav.dagpenger.vedtak.iverksett.client.mapper.IverksettDtoBuilder
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utbetalingsdag
 import org.junit.jupiter.api.Test
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -20,11 +21,11 @@ class IverksettDtoBuilderTest {
     private val iverksettDtoBuilder get() = IverksettDtoBuilder(sak)
 
     @Test
-    fun `ForrigeBehandlingId er null for første vedtak, ved neste vedtak er forrigeBehandlingId lik første vedtaks behandlingId`() {
+    fun `Tester innholdet av iverksettingsobjektet når man får flere hendelser om fattet utbetalingsvedtak`() {
+        // første utbetalingsvedtak
         val førsteVedtaksBehandlingId = UUID.randomUUID()
         val førsteVedtaksVirkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
         val førsteVedtaksUtbetalingsdager = utbetalingsdager(førsteVedtaksVirkningsdato, 500.0)
-
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
                 vedtakId = UUID.randomUUID(),
@@ -36,14 +37,16 @@ class IverksettDtoBuilderTest {
         val førsteIverksettDto = iverksettDtoBuilder.bygg()
         førsteIverksettDto shouldNotBe null
         førsteIverksettDto.forrigeIverksetting shouldBe null
+        førsteIverksettDto.vedtak.utbetalinger.size shouldBe 14
 
+        // andre utbetalingsvedtak
         val andreVedtaksVirkningsdato: LocalDate =
             førsteVedtaksVirkningsdato.plusDays(førsteVedtaksUtbetalingsdager.size.toLong())
-
+        val andreVedtaksBehandlingId = UUID.randomUUID()
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
                 vedtakId = UUID.randomUUID(),
-                behandlingId = UUID.randomUUID(),
+                behandlingId = andreVedtaksBehandlingId,
                 virkningsdato = andreVedtaksVirkningsdato,
                 utbetalingsdager = utbetalingsdager(andreVedtaksVirkningsdato, 633.0),
             ),
@@ -51,6 +54,22 @@ class IverksettDtoBuilderTest {
         val andreIverksettDto = iverksettDtoBuilder.bygg()
         andreIverksettDto shouldNotBe null
         andreIverksettDto.forrigeIverksetting!!.behandlingId shouldBe førsteVedtaksBehandlingId
+        andreIverksettDto.vedtak.utbetalinger.size shouldBe 28
+
+        // tredje utbetalingsvedtak korrigerer det første
+        val tredjeVedtaksUtbetalingsdager = utbetalingsdager(førsteVedtaksVirkningsdato, 380.0)
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                vedtakId = UUID.randomUUID(),
+                behandlingId = andreVedtaksBehandlingId,
+                virkningsdato = førsteVedtaksVirkningsdato,
+                utbetalingsdager = tredjeVedtaksUtbetalingsdager,
+            ),
+        )
+        val tredjeIverksettDto = iverksettDtoBuilder.bygg()
+        tredjeIverksettDto shouldNotBe null
+        tredjeIverksettDto.forrigeIverksetting!!.behandlingId shouldBe andreVedtaksBehandlingId
+        tredjeIverksettDto.vedtak.utbetalinger.size shouldBe 28
     }
 
     private fun utbetalingsvedtakFattetHendelse(
@@ -77,10 +96,18 @@ class IverksettDtoBuilderTest {
         val utbetalingsdager = mutableListOf<Utbetalingsdag>()
 
         for (i in -13..0) {
+            val dato = virkningsdato.minusDays(i.absoluteValue.toLong())
+            val beløp =
+                if (dato.dayOfWeek in setOf(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY)) {
+                    0.0
+                } else {
+                    dagsbeløp
+                }
+
             utbetalingsdager.add(
                 Utbetalingsdag(
-                    dato = virkningsdato.minusDays(i.absoluteValue.toLong()),
-                    beløp = dagsbeløp,
+                    dato = dato,
+                    beløp = beløp,
                 ),
             )
         }
