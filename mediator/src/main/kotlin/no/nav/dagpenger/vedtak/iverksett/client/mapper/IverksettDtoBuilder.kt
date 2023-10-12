@@ -75,12 +75,12 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         this.utfall = utfall
         this.iverksettinger.add(
             Iverksetting(
-                vedtakId,
-                behandlingId,
-                vedtakstidspunkt,
-                virkningsdato,
-                utfall,
-                mutableListOf(),
+                vedtakId = vedtakId,
+                behandlingId = behandlingId,
+                vedtakstidspunkt = vedtakstidspunkt,
+                virkningsdato = virkningsdato,
+                utfall = utfall,
+                iverksettingsdager = mutableListOf(),
             ),
         )
     }

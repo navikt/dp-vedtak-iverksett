@@ -11,21 +11,22 @@ class Sak(
     private val sakId: SakId,
     private val iverksettinger: MutableList<Iverksetting>,
 ) : Aktivitetskontekst {
-
     companion object {
         val kontekstType: String = "Sak"
+
         fun rehydrer(
             ident: PersonIdentifikator,
             sakId: SakId,
-            iverksettinger: List<Iverksetting>,
+            iverksettinger: MutableList<Iverksetting>,
         ): Sak {
             return Sak(
                 ident = ident,
                 sakId = sakId,
-                iverksettinger = mutableListOf() //TODO Fix
+                iverksettinger = iverksettinger,
             )
         }
     }
+
     fun sakId() = sakId
 
     fun accept(visitor: SakVisitor) {
