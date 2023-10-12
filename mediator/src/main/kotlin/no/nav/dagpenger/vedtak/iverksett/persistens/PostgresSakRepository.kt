@@ -77,20 +77,21 @@ private class PopulerQueries(
                 //language=PostgreSQL
                 statement =
                     """
-                    INSERT INTO sak(id, ident)
-                    VALUES (:id, :ident)
+                    INSERT INTO sak(id, ident, endret)
+                    VALUES (:id, :ident, now())
                     ON CONFLICT DO NOTHING
                     """.trimIndent(),
                 paramMap =
                     mapOf(
-                        "id" to sakId,
-                        "ident" to ident,
+                        "id" to sakId.sakId,
+                        "ident" to ident.identifikator(),
                     ),
             ),
         )
     }
 
     override fun preVisitIverksettingDag(
+        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
@@ -99,6 +100,7 @@ private class PopulerQueries(
     ) {
         this.iverksettingDbId = session.hentIverksettingDbId(vedtakId)
             ?: session.opprettIverksetting(
+                sakId = sakId,
                 vedtakId = vedtakId,
                 behandlingId = behandlingId,
                 vedtakstidspunkt = vedtakstidspunkt,
@@ -131,6 +133,7 @@ private class PopulerQueries(
     }
 
     override fun postVisitIverksettingDag(
+        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
@@ -219,6 +222,7 @@ private fun Session.hentIverksettingsdager(iverksettingId: Long) =
     )
 
 private fun Session.opprettIverksetting(
+    sakId: SakId,
     vedtakId: UUID,
     behandlingId: UUID,
     vedtakstidspunkt: LocalDateTime,
@@ -230,13 +234,14 @@ private fun Session.opprettIverksetting(
         statement =
             """
             INSERT INTO iverksetting
-                (vedtak_id, behandling_id, vedtakstidspunkt, virkningsdato, utfall)
+                (sak_id, vedtak_id, behandling_id, vedtakstidspunkt, virkningsdato, utfall)
             VALUES 
-                (:vedtak_id, :behandling_id, :vedtakstidspunkt, :virkningsdato, :utfall)
+                (:sak_id, :vedtak_id, :behandling_id, :vedtakstidspunkt, :virkningsdato, :utfall)
             RETURNING id;
             """.trimIndent(),
         paramMap =
             mapOf(
+                "sak_id" to sakId.sakId,
                 "vedtak_id" to vedtakId,
                 "behandling_id" to behandlingId,
                 "vedtakstidspunkt" to vedtakstidspunkt,

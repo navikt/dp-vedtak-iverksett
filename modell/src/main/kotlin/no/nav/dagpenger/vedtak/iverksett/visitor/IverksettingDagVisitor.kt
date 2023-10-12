@@ -1,6 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett.visitor
 
 import no.nav.dagpenger.aktivitetslogg.AktivitetsloggVisitor
+import no.nav.dagpenger.vedtak.iverksett.SakId
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import java.time.LocalDate
@@ -9,6 +10,7 @@ import java.util.UUID
 
 interface IverksettingDagVisitor : AktivitetsloggVisitor {
     fun preVisitIverksettingDag(
+        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
@@ -23,6 +25,7 @@ interface IverksettingDagVisitor : AktivitetsloggVisitor {
     }
 
     fun postVisitIverksettingDag(
+        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,

@@ -4,7 +4,8 @@ import mu.KotlinLogging
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
-import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakRepository
+import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresDataSourceBuilder
+import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresSakRepository
 import no.nav.helse.rapids_rivers.RapidApplication
 import no.nav.helse.rapids_rivers.RapidsConnection
 
@@ -12,6 +13,8 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
     companion object {
         private val logger = KotlinLogging.logger { }
     }
+
+    private val sakRepository = PostgresSakRepository(PostgresDataSourceBuilder.dataSource)
 
     private val rapidsConnection =
         RapidApplication.Builder(
@@ -26,7 +29,8 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
             hendelseRepository = InMemoryMeldingRepository(),
             sakMediator =
                 SakMediator(
-                    sakRepository = InMemorySakRepository(),
+//                    sakRepository = InMemorySakRepository(),
+                    sakRepository = sakRepository,
                     iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
                 ),
         )
