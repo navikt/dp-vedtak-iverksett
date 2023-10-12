@@ -13,6 +13,7 @@ import no.nav.dagpenger.vedtak.iverksett.SakId
 import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
+import no.nav.helse.rapids_rivers.toUUID
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -32,9 +33,17 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         sak.accept(this)
     }
 
-    fun bygg() =
-        IverksettDto(
-            saksreferanse = sakId.sakId,
+    // TODO skal vi benytte uuid eller string eller begge deler for sak-id?
+    fun bygg(): IverksettDto {
+        var sakIdUUID: UUID? = null
+        try {
+            sakIdUUID = sakId.sakId.toUUID()
+        } catch (e: Exception) {
+        }
+
+        return IverksettDto(
+            saksreferanse = if (sakIdUUID == null) sakId.sakId else null,
+            sakId = sakIdUUID,
             behandlingId = behandlingId,
             personIdent = ident.identifikator(),
             forrigeIverksetting = forrigeIverksettingDto(),
@@ -52,6 +61,7 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
                     beslutterId = "DIGIDAG",
                 ),
         )
+    }
 
     override fun visitSak(
         ident: PersonIdentifikator,
