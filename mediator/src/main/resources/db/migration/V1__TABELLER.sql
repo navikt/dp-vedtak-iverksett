@@ -11,7 +11,7 @@ CREATE INDEX IF NOT EXISTS sak_ident_idx ON sak (ident);
 CREATE TABLE IF NOT EXISTS iverksetting
 (
     id               BIGSERIAL                                                         PRIMARY KEY,
-    sak_id           TEXT                                                              NOT NULL,
+    sak_id           TEXT           REFERENCES sak (id)                                NOT NULL,
     vedtak_id        UUID                                                              NOT NULL UNIQUE,
     behandling_id    UUID                                                              NOT NULL,
     vedtakstidspunkt TIMESTAMP                                                         NOT NULL,
@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS iverksettingsdag
     iverksetting_id  BIGINT       REFERENCES iverksetting (id)                         NOT NULL,
     dato             DATE                                                              NOT NULL,
     beløp            DECIMAL                                                           NOT NULL,
-    opprettet        TIMESTAMP WITH TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'::TEXT) NOT NULL
+    opprettet        TIMESTAMP WITH TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'::TEXT) NOT NULL,
+    UNIQUE(iverksetting_id, dato)
 );
 
 CREATE INDEX IF NOT EXISTS iverksettingsdag_iverksetting_idx ON iverksettingsdag (iverksetting_id);

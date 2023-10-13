@@ -30,7 +30,7 @@ class PostgresSakRepository(private val dataSource: DataSource) : SakRepository 
                         """
                         SELECT ident
                         FROM   sak
-                        WHERE  sak_id = :sak_id
+                        WHERE  id = :sak_id
                         """.trimIndent(),
                     paramMap = mapOf("sak_id" to sakId.sakId),
                 ).map
@@ -126,7 +126,7 @@ private class PopulerQueries(
                     mapOf(
                         "iverksetting_id" to iverksettingDbId,
                         "dato" to dato,
-                        "belop" to beløp,
+                        "belop" to beløp.verdi,
                     ),
             ),
         )
@@ -159,7 +159,7 @@ private fun Session.hentIverksettinger(sakId: SakId) =
                 FROM   iverksetting 
                 WHERE  sak_id = :sak_id
                 """.trimIndent(),
-            paramMap = mapOf("sak_id" to sakId),
+            paramMap = mapOf("sak_id" to sakId.sakId),
         ).map { rad ->
             val iverksettingDbId = rad.long("id")
             Iverksetting(
