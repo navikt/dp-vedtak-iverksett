@@ -63,6 +63,7 @@ private class PopulerQueries(
 ) : SakVisitor {
     val queries = mutableListOf<Query>()
     private var iverksettingDbId: Long? = null
+    private var sakId: SakId? = null
 
     init {
         sak.accept(this)
@@ -72,6 +73,7 @@ private class PopulerQueries(
         ident: PersonIdentifikator,
         sakId: SakId,
     ) {
+        this.sakId = sakId
         queries.add(
             queryOf(
                 //language=PostgreSQL
@@ -91,7 +93,6 @@ private class PopulerQueries(
     }
 
     override fun preVisitIverksettingDag(
-        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
@@ -100,7 +101,7 @@ private class PopulerQueries(
     ) {
         this.iverksettingDbId = session.hentIverksettingDbId(vedtakId)
             ?: session.opprettIverksetting(
-                sakId = sakId,
+                sakId = this.sakId!!,
                 vedtakId = vedtakId,
                 behandlingId = behandlingId,
                 vedtakstidspunkt = vedtakstidspunkt,
@@ -133,7 +134,6 @@ private class PopulerQueries(
     }
 
     override fun postVisitIverksettingDag(
-        sakId: SakId,
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,

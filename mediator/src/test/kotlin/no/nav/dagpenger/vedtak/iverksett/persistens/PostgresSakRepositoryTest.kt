@@ -9,6 +9,7 @@ import kotliquery.using
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import no.nav.dagpenger.vedtak.iverksett.Sak
 import no.nav.dagpenger.vedtak.iverksett.SakId
+import no.nav.dagpenger.vedtak.iverksett.assertDeepEquals
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.persistens.Postgres.withMigratedDb
 import org.junit.jupiter.api.Assertions
@@ -42,29 +43,29 @@ class PostgresSakRepositoryTest {
     }
 
     // TODO kjører ikke preVisit iverksettingsdag
-//    @Test
-//    fun `lagrer og henter komplett sak med iverksetting`() {
-//        val sak = Sak(ident = ident, sakId = sakId, iverksettinger = mutableListOf())
-//        val virkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-//        val utbetalingsdager = utbetalingsdager(virkningsdato, 500.0)
-//        sak.håndter(
-//            utbetalingsvedtakFattetHendelse(
-//                vedtakId = UUID.randomUUID(),
-//                behandlingId = UUID.randomUUID(),
-//                virkningsdato = virkningsdato,
-//                utbetalingsdager = utbetalingsdager,
-//            ),
-//        )
-//
-//        withMigratedDb {
-//            val postgresSakRepository = PostgresSakRepository(PostgresDataSourceBuilder.dataSource)
-//            postgresSakRepository.lagre(sak)
-//
-//            val rehydrertSak = postgresSakRepository.hent(sakId).shouldNotBeNull()
-//
-//            assertDeepEquals(sak, rehydrertSak)
-//        }
-//    }
+    @Test
+    fun `lagrer og henter komplett sak med iverksetting`() {
+        val sak = Sak(ident = ident, sakId = sakId, iverksettinger = mutableListOf())
+        val virkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val utbetalingsdager = utbetalingsdager(virkningsdato, 500.0)
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                vedtakId = UUID.randomUUID(),
+                behandlingId = UUID.randomUUID(),
+                virkningsdato = virkningsdato,
+                utbetalingsdager = utbetalingsdager,
+            ),
+        )
+
+        withMigratedDb {
+            val postgresSakRepository = PostgresSakRepository(PostgresDataSourceBuilder.dataSource)
+            postgresSakRepository.lagre(sak)
+
+            val rehydrertSak = postgresSakRepository.hent(sakId).shouldNotBeNull()
+
+            assertDeepEquals(sak, rehydrertSak)
+        }
+    }
 
     private fun assertAntallRader(
         tabell: String,
