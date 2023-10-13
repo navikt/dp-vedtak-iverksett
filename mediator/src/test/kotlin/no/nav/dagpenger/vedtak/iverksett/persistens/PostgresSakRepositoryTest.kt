@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 import kotlin.math.absoluteValue
 
@@ -42,18 +43,27 @@ class PostgresSakRepositoryTest {
         }
     }
 
-    // TODO kjører ikke preVisit iverksettingsdag
     @Test
-    fun `lagrer og henter komplett sak med iverksetting`() {
+    fun `lagrer og henter komplett sak med to iverksettinger`() {
         val sak = Sak(ident = ident, sakId = sakId, iverksettinger = mutableListOf())
-        val virkningsdato: LocalDate = LocalDate.now().minusDays(ukedagIdag.value.toLong())
-        val utbetalingsdager = utbetalingsdager(virkningsdato, 500.0)
+        val førsteVirkningsdato = LocalDate.now().minusDays(ukedagIdag.value.toLong())
+        val førsteUtbetalingsdager = utbetalingsdager(førsteVirkningsdato, 500.0)
         sak.håndter(
             utbetalingsvedtakFattetHendelse(
                 vedtakId = UUID.randomUUID(),
                 behandlingId = UUID.randomUUID(),
-                virkningsdato = virkningsdato,
-                utbetalingsdager = utbetalingsdager,
+                virkningsdato = førsteVirkningsdato,
+                utbetalingsdager = førsteUtbetalingsdager,
+            ),
+        )
+        val andreVirkningsdato = førsteVirkningsdato.plusDays(14)
+        val andreUtbetalingsdager = utbetalingsdager(andreVirkningsdato, 600.0)
+        sak.håndter(
+            utbetalingsvedtakFattetHendelse(
+                vedtakId = UUID.randomUUID(),
+                behandlingId = UUID.randomUUID(),
+                virkningsdato = andreVirkningsdato,
+                utbetalingsdager = andreUtbetalingsdager,
             ),
         )
 
@@ -93,7 +103,7 @@ class PostgresSakRepositoryTest {
         vedtakId = vedtakId,
         behandlingId = behandlingId,
         sakId = sakId.sakId,
-        vedtakstidspunkt = LocalDateTime.now(),
+        vedtakstidspunkt = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
         virkningsdato = virkningsdato,
         utfall = UtbetalingsvedtakFattetHendelse.Utfall.Innvilget,
         utbetalingsdager = utbetalingsdager,

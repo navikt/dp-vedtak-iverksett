@@ -38,8 +38,8 @@ class PostgresSakRepository(private val dataSource: DataSource) : SakRepository 
                         Sak.rehydrer(
                             ident = rad.string("ident").tilPersonIdentfikator(),
                             sakId = sakId,
-                            iverksettinger = mutableListOf(),
-                        ).also { session.hentIverksettinger(sakId = sakId) }
+                            iverksettinger = hentSakensIverksettinger(sakId = sakId, session = session),
+                        )
                     }.asSingle,
             )
         }
@@ -48,7 +48,7 @@ class PostgresSakRepository(private val dataSource: DataSource) : SakRepository 
     override fun lagre(sak: Sak) {
         using(sessionOf(dataSource)) { session ->
             session.transaction { transactionalSession: TransactionalSession ->
-                val populerQueries = PopulerQueries(sak = sak, session = transactionalSession)
+                val populerQueries = PopulerQueries(sak = sak)
                 populerQueries.queries.forEach {
                     transactionalSession.run(it.asUpdate)
                 }
@@ -59,11 +59,10 @@ class PostgresSakRepository(private val dataSource: DataSource) : SakRepository 
 
 private class PopulerQueries(
     sak: Sak,
-    private val session: Session,
 ) : SakVisitor {
     val queries = mutableListOf<Query>()
-    private var iverksettingDbId: Long? = null
     private var sakId: SakId? = null
+    private var vedtakId: UUID? = null
 
     init {
         sak.accept(this)
@@ -79,8 +78,10 @@ private class PopulerQueries(
                 //language=PostgreSQL
                 statement =
                     """
-                    INSERT INTO sak(id, ident, endret)
-                    VALUES (:id, :ident, now())
+                    INSERT INTO sak
+                        (id, ident, endret)
+                    VALUES
+                        (:id, :ident, now())
                     ON CONFLICT DO NOTHING
                     """.trimIndent(),
                 paramMap =
@@ -92,22 +93,36 @@ private class PopulerQueries(
         )
     }
 
-    override fun preVisitIverksettingDag(
+    override fun visitIverksetting(
         vedtakId: UUID,
         behandlingId: UUID,
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
         utfall: Utfall,
     ) {
-        this.iverksettingDbId = session.hentIverksettingDbId(vedtakId)
-            ?: session.opprettIverksetting(
-                sakId = this.sakId!!,
-                vedtakId = vedtakId,
-                behandlingId = behandlingId,
-                vedtakstidspunkt = vedtakstidspunkt,
-                virkningsdato = virkningsdato,
-                utfall = utfall,
-            ) ?: throw RuntimeException("Kunne ikke lagre iverksetting for vedtakId $vedtakId. Noe er veldig galt!")
+        this.vedtakId = vedtakId
+        queries.add(
+            queryOf(
+                //language=PostgreSQL
+                statement =
+                    """
+                    INSERT INTO iverksetting
+                        (sak_id, vedtak_id, behandling_id, vedtakstidspunkt, virkningsdato, utfall)
+                    VALUES 
+                        (:sak_id, :vedtak_id, :behandling_id, :vedtakstidspunkt, :virkningsdato, :utfall)
+                    ON CONFLICT DO NOTHING
+                    """.trimIndent(),
+                paramMap =
+                    mapOf(
+                        "sak_id" to this.sakId!!.sakId,
+                        "vedtak_id" to vedtakId,
+                        "behandling_id" to behandlingId,
+                        "vedtakstidspunkt" to vedtakstidspunkt,
+                        "virkningsdato" to virkningsdato,
+                        "utfall" to utfall.name,
+                    ),
+            ),
+        )
     }
 
     override fun visitIverksettingDag(
@@ -119,29 +134,30 @@ private class PopulerQueries(
                 //language=PostgreSQL
                 statement =
                     """
-                    INSERT INTO iverksettingsdag(iverksetting_id, dato, beløp)
-                    VALUES (:iverksetting_id, :dato, :belop)
+                    INSERT INTO iverksettingsdag
+                        (vedtak_id, dato, beløp)
+                    VALUES
+                        (:vedtak_id, :dato, :belop)
                     ON CONFLICT DO NOTHING
                     """.trimIndent(),
                 paramMap =
                     mapOf(
-                        "iverksetting_id" to iverksettingDbId,
+                        "vedtak_id" to this.vedtakId,
                         "dato" to dato,
                         "belop" to beløp.verdi,
                     ),
             ),
         )
     }
+}
 
-    override fun postVisitIverksettingDag(
-        vedtakId: UUID,
-        behandlingId: UUID,
-        vedtakstidspunkt: LocalDateTime,
-        virkningsdato: LocalDate,
-        utfall: Utfall,
-    ) {
-        this.iverksettingDbId = null
-    }
+private fun hentSakensIverksettinger(
+    sakId: SakId,
+    session: Session,
+): MutableList<Iverksetting> {
+    val iverksettinger = mutableListOf<Iverksetting>()
+    iverksettinger.addAll(session.hentIverksettinger(sakId))
+    return iverksettinger
 }
 
 private fun Session.hentIverksettinger(sakId: SakId) =
@@ -150,8 +166,7 @@ private fun Session.hentIverksettinger(sakId: SakId) =
             //language=PostgreSQL
             statement =
                 """
-                SELECT id
-                     , vedtak_id
+                SELECT vedtak_id
                      , behandling_id
                      , vedtakstidspunkt
                      , virkningsdato
@@ -161,9 +176,9 @@ private fun Session.hentIverksettinger(sakId: SakId) =
                 """.trimIndent(),
             paramMap = mapOf("sak_id" to sakId.sakId),
         ).map { rad ->
-            val iverksettingDbId = rad.long("id")
+            val vedtakId = rad.uuid("vedtak_id")
             Iverksetting(
-                vedtakId = rad.uuid("vedtak_id"),
+                vedtakId = vedtakId,
                 behandlingId = rad.uuid("behandling_id"),
                 vedtakstidspunkt = rad.localDateTime("vedtakstidspunkt"),
                 virkningsdato = rad.localDate("virkningsdato"),
@@ -173,36 +188,16 @@ private fun Session.hentIverksettinger(sakId: SakId) =
                         Utfall.Avslått.name -> Utfall.Avslått
                         else -> {
                             throw IllegalArgumentException(
-                                "Ukjent utfall ${rad.string("utfall")} for iverksetting med id ${
-                                    rad.uuid(
-                                        "id",
-                                    )
-                                }",
+                                "Ukjent utfall ${rad.string("utfall")} ved iverksetting av vedtakId $vedtakId",
                             )
                         }
                     },
-                iverksettingsdager = this.hentIverksettingsdager(iverksettingDbId),
+                iverksettingsdager = this.hentIverksettingsdager(vedtakId),
             )
         }.asList,
     )
 
-private fun Session.hentIverksettingDbId(vedtakId: UUID) =
-    this.run(
-        queryOf(
-            //language=PostgreSQL
-            statement =
-                """
-                SELECT  id 
-                FROM    iverksetting 
-                WHERE   vedtak_id = :vedtak_id
-                """.trimIndent(),
-            paramMap = mapOf("uuid" to vedtakId),
-        ).map { rad ->
-            rad.long("id")
-        }.asSingle,
-    )
-
-private fun Session.hentIverksettingsdager(iverksettingId: Long) =
+private fun Session.hentIverksettingsdager(vedtakId: UUID) =
     this.run(
         queryOf(
             //language=PostgreSQL
@@ -210,9 +205,9 @@ private fun Session.hentIverksettingsdager(iverksettingId: Long) =
                 """
                 SELECT dato, beløp
                 FROM   iverksettingsdag
-                WHERE  iverksetting_id = :iverksetting_id
+                WHERE  vedtak_id = :vedtak_id
                 """.trimIndent(),
-            paramMap = mapOf("iverksetting_id" to iverksettingId),
+            paramMap = mapOf("vedtak_id" to vedtakId),
         ).map { rad ->
             IverksettingDag(
                 dato = rad.localDate("dato"),
@@ -220,35 +215,3 @@ private fun Session.hentIverksettingsdager(iverksettingId: Long) =
             )
         }.asList,
     )
-
-private fun Session.opprettIverksetting(
-    sakId: SakId,
-    vedtakId: UUID,
-    behandlingId: UUID,
-    vedtakstidspunkt: LocalDateTime,
-    virkningsdato: LocalDate,
-    utfall: Utfall,
-) = this.run(
-    queryOf(
-        //language=PostgreSQL
-        statement =
-            """
-            INSERT INTO iverksetting
-                (sak_id, vedtak_id, behandling_id, vedtakstidspunkt, virkningsdato, utfall)
-            VALUES 
-                (:sak_id, :vedtak_id, :behandling_id, :vedtakstidspunkt, :virkningsdato, :utfall)
-            RETURNING id;
-            """.trimIndent(),
-        paramMap =
-            mapOf(
-                "sak_id" to sakId.sakId,
-                "vedtak_id" to vedtakId,
-                "behandling_id" to behandlingId,
-                "vedtakstidspunkt" to vedtakstidspunkt,
-                "virkningsdato" to virkningsdato,
-                "utfall" to utfall.name,
-            ),
-    ).map { rad ->
-        rad.long("id")
-    }.asSingle,
-)
