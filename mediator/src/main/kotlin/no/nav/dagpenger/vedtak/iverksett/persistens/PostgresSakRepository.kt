@@ -32,7 +32,7 @@ class PostgresSakRepository(private val dataSource: DataSource) : SakRepository 
                         FROM   sak
                         WHERE  sak_id = :sak_id
                         """.trimIndent(),
-                    paramMap = mapOf("sak_id" to sakId),
+                    paramMap = mapOf("sak_id" to sakId.sakId),
                 ).map
                     { rad ->
                         Sak.rehydrer(
