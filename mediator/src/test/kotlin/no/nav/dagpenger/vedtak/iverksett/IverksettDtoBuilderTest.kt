@@ -37,7 +37,7 @@ class IverksettDtoBuilderTest {
         val førsteIverksettDto = iverksettDtoBuilder.bygg()
         førsteIverksettDto shouldNotBe null
         førsteIverksettDto.forrigeIverksetting shouldBe null
-        førsteIverksettDto.vedtak.utbetalinger.size shouldBe 14
+        førsteIverksettDto.vedtak.utbetalinger.size shouldBe 10
 
         // andre utbetalingsvedtak
         val andreVedtaksVirkningsdato: LocalDate =
@@ -54,7 +54,7 @@ class IverksettDtoBuilderTest {
         val andreIverksettDto = iverksettDtoBuilder.bygg()
         andreIverksettDto shouldNotBe null
         andreIverksettDto.forrigeIverksetting!!.behandlingId shouldBe førsteVedtaksBehandlingId
-        andreIverksettDto.vedtak.utbetalinger.size shouldBe 28
+        andreIverksettDto.vedtak.utbetalinger.size shouldBe 20
 
         // tredje utbetalingsvedtak korrigerer det første
         val tredjeVedtaksUtbetalingsdager = utbetalingsdager(førsteVedtaksVirkningsdato, 380.0)
@@ -69,7 +69,7 @@ class IverksettDtoBuilderTest {
         val tredjeIverksettDto = iverksettDtoBuilder.bygg()
         tredjeIverksettDto shouldNotBe null
         tredjeIverksettDto.forrigeIverksetting!!.behandlingId shouldBe andreVedtaksBehandlingId
-        tredjeIverksettDto.vedtak.utbetalinger.size shouldBe 28
+        tredjeIverksettDto.vedtak.utbetalinger.size shouldBe 20
     }
 
     private fun utbetalingsvedtakFattetHendelse(

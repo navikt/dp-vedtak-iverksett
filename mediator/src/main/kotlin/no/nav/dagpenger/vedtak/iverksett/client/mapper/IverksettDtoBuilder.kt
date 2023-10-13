@@ -128,13 +128,15 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
         val utbetalingsdagerMap = iverksettingsdager.associateBy { iverksettingsdag -> iverksettingsdag.dato }
         val utbetalingsdager = mutableListOf<UtbetalingDto>()
         utbetalingsdagerMap.forEach { entry ->
-            utbetalingsdager.add(
-                UtbetalingDto(
-                    belopPerDag = entry.value.beløp.verdi.toInt(),
-                    fraOgMedDato = entry.key,
-                    tilOgMedDato = entry.key,
-                ),
-            )
+            if (entry.value.beløp.verdi.toInt() != 0) {
+                utbetalingsdager.add(
+                    UtbetalingDto(
+                        belopPerDag = entry.value.beløp.verdi.toInt(),
+                        fraOgMedDato = entry.key,
+                        tilOgMedDato = entry.key,
+                    ),
+                )
+            }
         }
         return utbetalingsdager
     }
