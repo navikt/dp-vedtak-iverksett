@@ -12,6 +12,5 @@ interface IverksettingVisitor : IverksettingDagVisitor {
         vedtakstidspunkt: LocalDateTime,
         virkningsdato: LocalDate,
         utfall: UtbetalingsvedtakFattetHendelse.Utfall,
-    ) {
-    }
+    ) {}
 }
