@@ -1,6 +1,7 @@
-package no.nav.dagpenger.vedtak.iverksett.persistens
+package no.nav.dagpenger.vedtak.iverksett.utils
 
 import com.zaxxer.hikari.HikariDataSource
+import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresDataSourceBuilder
 import org.flywaydb.core.internal.configuration.ConfigUtils
 import org.testcontainers.containers.PostgreSQLContainer
 
@@ -59,7 +60,7 @@ internal object Postgres {
         setup: () -> Unit,
         test: () -> Unit,
     ) {
-        this.setup()
+        Postgres.setup()
         PostgresDataSourceBuilder.clean().run {
             PostgresDataSourceBuilder.runMigrationTo(target)
             setup()

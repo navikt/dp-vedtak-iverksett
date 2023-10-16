@@ -1,8 +1,10 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.client
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
+import no.nav.dagpenger.vedtak.iverksett.Sak
+import no.nav.dagpenger.vedtak.iverksett.SakId
 import no.nav.dagpenger.vedtak.iverksett.client.mapper.IverksettDtoBuilder
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utbetalingsdag

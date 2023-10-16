@@ -1,7 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett.persistens
 
-import no.nav.dagpenger.vedtak.iverksett.persistens.Postgres.withCleanDb
 import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresDataSourceBuilder.runMigration
+import no.nav.dagpenger.vedtak.iverksett.utils.Postgres.withCleanDb
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

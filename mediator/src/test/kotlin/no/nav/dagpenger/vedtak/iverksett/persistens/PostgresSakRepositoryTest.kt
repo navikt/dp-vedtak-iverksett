@@ -9,9 +9,9 @@ import kotliquery.using
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import no.nav.dagpenger.vedtak.iverksett.Sak
 import no.nav.dagpenger.vedtak.iverksett.SakId
-import no.nav.dagpenger.vedtak.iverksett.assertDeepEquals
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
-import no.nav.dagpenger.vedtak.iverksett.persistens.Postgres.withMigratedDb
+import no.nav.dagpenger.vedtak.iverksett.utils.Postgres.withMigratedDb
+import no.nav.dagpenger.vedtak.iverksett.utils.assertDeepEquals
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek

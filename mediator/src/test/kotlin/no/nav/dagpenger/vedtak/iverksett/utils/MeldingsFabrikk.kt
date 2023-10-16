@@ -1,5 +1,6 @@
-package no.nav.dagpenger.vedtak.iverksett
+package no.nav.dagpenger.vedtak.iverksett.utils
 
+import no.nav.dagpenger.vedtak.iverksett.SakId
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID

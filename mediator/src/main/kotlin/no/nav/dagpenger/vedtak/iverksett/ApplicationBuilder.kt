@@ -22,10 +22,11 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
     init {
         rapidsConnection.register(this)
 
-        val sakMediator = SakMediator(
-            sakRepository = sakRepository,
-            iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
-        )
+        val sakMediator =
+            SakMediator(
+                sakRepository = sakRepository,
+                iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
+            )
 
         UtbetalingsvedtakFattetMottak(rapidsConnection, sakMediator)
     }
