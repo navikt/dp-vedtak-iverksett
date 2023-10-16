@@ -21,7 +21,6 @@ CREATE TABLE IF NOT EXISTS iverksetting
 
 CREATE INDEX IF NOT EXISTS iverksetting_sak_idx ON iverksetting (sak_id);
 CREATE INDEX IF NOT EXISTS iverksetting_behandling_idx ON iverksetting (behandling_id);
-CREATE INDEX IF NOT EXISTS iverksetting_vedtakstidspunkt_idx ON iverksetting (sak_id, vedtakstidspunkt);
 
 CREATE TABLE IF NOT EXISTS iverksettingsdag
 (
