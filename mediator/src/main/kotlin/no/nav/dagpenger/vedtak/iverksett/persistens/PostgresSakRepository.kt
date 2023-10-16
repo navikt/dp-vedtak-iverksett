@@ -6,13 +6,13 @@ import kotliquery.TransactionalSession
 import kotliquery.queryOf
 import kotliquery.sessionOf
 import kotliquery.using
+import no.nav.dagpenger.vedtak.iverksett.Beløp
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.IverksettingDag
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator.Companion.tilPersonIdentfikator
 import no.nav.dagpenger.vedtak.iverksett.Sak
 import no.nav.dagpenger.vedtak.iverksett.SakId
-import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse.Utfall
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 import java.time.LocalDate

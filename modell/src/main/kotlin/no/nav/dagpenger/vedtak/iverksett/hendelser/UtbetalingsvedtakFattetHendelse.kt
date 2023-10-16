@@ -4,9 +4,9 @@ import no.nav.dagpenger.aktivitetslogg.Aktivitetskontekst
 import no.nav.dagpenger.aktivitetslogg.Aktivitetslogg
 import no.nav.dagpenger.aktivitetslogg.IAktivitetslogg
 import no.nav.dagpenger.aktivitetslogg.SpesifikkKontekst
+import no.nav.dagpenger.vedtak.iverksett.Beløp
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.IverksettingDag
-import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID

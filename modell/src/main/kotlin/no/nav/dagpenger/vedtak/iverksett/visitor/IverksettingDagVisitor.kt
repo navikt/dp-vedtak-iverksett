@@ -1,7 +1,7 @@
 package no.nav.dagpenger.vedtak.iverksett.visitor
 
 import no.nav.dagpenger.aktivitetslogg.AktivitetsloggVisitor
-import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
+import no.nav.dagpenger.vedtak.iverksett.Beløp
 import java.time.LocalDate
 
 interface IverksettingDagVisitor : AktivitetsloggVisitor {

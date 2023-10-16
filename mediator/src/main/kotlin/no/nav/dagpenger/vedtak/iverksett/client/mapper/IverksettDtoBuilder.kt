@@ -6,11 +6,11 @@ import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
+import no.nav.dagpenger.vedtak.iverksett.Beløp
 import no.nav.dagpenger.vedtak.iverksett.Iverksetting
 import no.nav.dagpenger.vedtak.iverksett.PersonIdentifikator
 import no.nav.dagpenger.vedtak.iverksett.Sak
 import no.nav.dagpenger.vedtak.iverksett.SakId
-import no.nav.dagpenger.vedtak.iverksett.entitet.Beløp
 import no.nav.dagpenger.vedtak.iverksett.hendelser.UtbetalingsvedtakFattetHendelse
 import no.nav.dagpenger.vedtak.iverksett.visitor.SakVisitor
 import no.nav.helse.rapids_rivers.toUUID
