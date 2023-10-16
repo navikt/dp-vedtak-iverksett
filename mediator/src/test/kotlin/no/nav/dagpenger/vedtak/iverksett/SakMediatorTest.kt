@@ -7,7 +7,7 @@ import io.mockk.verify
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
 import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
-import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakRepository
+import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakTestRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +18,7 @@ class SakMediatorTest {
     private val førsteVirkningsdato = LocalDate.now().minusDays(14)
     private val ident = "12345123451"
     private val sakId = "SAK_NUMMER_1"
-    private val sakRepository = InMemorySakRepository()
+    private val sakRepository = InMemorySakTestRepository()
     private val iverksettClientMock = mockk<IverksettClient>()
 
     init {
