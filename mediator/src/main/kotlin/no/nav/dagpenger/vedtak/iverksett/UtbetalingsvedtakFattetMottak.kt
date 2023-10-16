@@ -18,14 +18,13 @@ internal class UtbetalingsvedtakFattetMottak(
 ) : River.PacketListener {
     private companion object {
         val logger = KotlinLogging.logger { }
-        val sikkerlogger = KotlinLogging.logger("tjenestekall.VedtakFattetMottak")
+        val sikkerlogger = KotlinLogging.logger("tjenestekall.UtbetalingsvedtakFattetMottak")
     }
 
     init {
         River(rapidsConnection).apply {
             validate { it.requireValue("@event_name", "utbetaling_vedtak_fattet") }
             validate { it.requireKey("@id", "@opprettet") }
-            validate { it.requireKey("utbetalingsdager") }
             validate {
                 it.requireKey(
                     "ident",
@@ -35,6 +34,7 @@ internal class UtbetalingsvedtakFattetMottak(
                     "vedtaktidspunkt",
                     "virkningsdato",
                     "utfall",
+                    "utbetalingsdager",
                 )
             }
         }.register(this)
