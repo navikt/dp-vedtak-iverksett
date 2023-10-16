@@ -5,8 +5,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
-import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
-import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
 import no.nav.dagpenger.vedtak.iverksett.persistens.InMemorySakTestRepository
 import no.nav.helse.rapids_rivers.testsupport.TestRapid
 import org.junit.jupiter.api.BeforeEach
@@ -22,11 +20,12 @@ class SakMediatorTest {
     private val iverksettClientMock = mockk<IverksettClient>()
 
     init {
-        HendelseMediator(
-            rapidsConnection = testRapid,
-            hendelseRepository = InMemoryMeldingRepository(),
-            sakMediator = SakMediator(sakRepository, iverksettClientMock),
-        )
+        val sakMediator =
+            SakMediator(
+                sakRepository = sakRepository,
+                iverksettClient = iverksettClientMock,
+            )
+        UtbetalingsvedtakFattetMottak(testRapid, sakMediator)
     }
 
     @BeforeEach

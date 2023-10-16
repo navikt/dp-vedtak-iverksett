@@ -30,10 +30,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
 private val logger = KotlinLogging.logger { }
 private val sikkerLogger = KotlinLogging.logger { "tjenestekall.SakMediator" }
 
-private fun logError(
-    hendelse: UtbetalingsvedtakFattetHendelse,
-    e: Exception,
-) {
+private fun logError(hendelse: UtbetalingsvedtakFattetHendelse, e: Exception) {
     withMDC(hendelse.toSpesifikkKontekst().kontekstMap) {
         logger.error("Alvorlig feil med hendelse. VedtakId: ${hendelse.vedtakId}. BehandlingId: ${hendelse.behandlingId}")
         sikkerLogger.error("Alvorlig feil: ${e.stackTrace}\n\t$e.message", e)

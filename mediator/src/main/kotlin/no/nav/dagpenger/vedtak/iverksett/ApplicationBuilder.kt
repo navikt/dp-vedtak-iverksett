@@ -2,8 +2,6 @@ package no.nav.dagpenger.vedtak.iverksett
 
 import mu.KotlinLogging
 import no.nav.dagpenger.vedtak.iverksett.client.IverksettClient
-import no.nav.dagpenger.vedtak.iverksett.melding.HendelseMediator
-import no.nav.dagpenger.vedtak.iverksett.persistens.InMemoryMeldingRepository
 import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresDataSourceBuilder
 import no.nav.dagpenger.vedtak.iverksett.persistens.PostgresSakRepository
 import no.nav.helse.rapids_rivers.RapidApplication
@@ -24,16 +22,12 @@ internal class ApplicationBuilder(config: Map<String, String>) : RapidsConnectio
     init {
         rapidsConnection.register(this)
 
-        HendelseMediator(
-            rapidsConnection = rapidsConnection,
-            hendelseRepository = InMemoryMeldingRepository(),
-            sakMediator =
-                SakMediator(
-//                    sakRepository = InMemorySakRepository(),
-                    sakRepository = sakRepository,
-                    iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
-                ),
+        val sakMediator = SakMediator(
+            sakRepository = sakRepository,
+            iverksettClient = IverksettClient(tokenProvider = Configuration.iverksettClientTokenSupplier),
         )
+
+        UtbetalingsvedtakFattetMottak(rapidsConnection, sakMediator)
     }
 
     fun start() = rapidsConnection.start()
