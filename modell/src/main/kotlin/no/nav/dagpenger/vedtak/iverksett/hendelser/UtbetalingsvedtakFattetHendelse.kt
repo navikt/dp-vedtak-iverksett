@@ -39,7 +39,7 @@ class UtbetalingsvedtakFattetHendelse(
 
     private fun mapTilIverksettingsdager(utbetalingsdager: List<Utbetalingsdag>) =
         utbetalingsdager.map { IverksettingDag(dato = it.dato, beløp = Beløp(it.beløp)) }
-            .toMutableList()
+            .toMutableList().sorted()
 
     data class Utbetalingsdag(val dato: LocalDate, val beløp: Double)
 

@@ -192,26 +192,29 @@ private fun Session.hentIverksettinger(sakId: SakId) =
                             )
                         }
                     },
-                iverksettingsdager = this.hentIverksettingsdager(vedtakId),
+                iverksettingsdager = this.hentSorterteIverksettingsdager(vedtakId),
             )
         }.asList,
     )
 
-private fun Session.hentIverksettingsdager(vedtakId: UUID) =
-    this.run(
-        queryOf(
-            //language=PostgreSQL
-            statement =
-                """
-                SELECT dato, beløp
-                FROM   iverksettingsdag
-                WHERE  vedtak_id = :vedtak_id
-                """.trimIndent(),
-            paramMap = mapOf("vedtak_id" to vedtakId),
-        ).map { rad ->
-            IverksettingDag(
-                dato = rad.localDate("dato"),
-                beløp = Beløp(rad.double("beløp")),
-            )
-        }.asList,
-    )
+private fun Session.hentSorterteIverksettingsdager(vedtakId: UUID): List<IverksettingDag> {
+    val iverksettingsdager =
+        this.run(
+            queryOf(
+                //language=PostgreSQL
+                statement =
+                    """
+                    SELECT dato, beløp
+                    FROM   iverksettingsdag
+                    WHERE  vedtak_id = :vedtak_id
+                    """.trimIndent(),
+                paramMap = mapOf("vedtak_id" to vedtakId),
+            ).map { rad ->
+                IverksettingDag(
+                    dato = rad.localDate("dato"),
+                    beløp = Beløp(rad.double("beløp")),
+                )
+            }.asList,
+        )
+    return iverksettingsdager.sorted()
+}

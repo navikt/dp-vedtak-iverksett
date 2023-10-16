@@ -18,21 +18,7 @@ class Iverksetting(
 ) : Aktivitetskontekst, Comparable<Iverksetting> {
     fun accept(visitor: IverksettingVisitor) {
         visitor.visitIverksetting(vedtakId, behandlingId, vedtakstidspunkt, virkningsdato, utfall)
-//        visitor.preVisitIverksettingDag(
-//            vedtakId = vedtakId,
-//            behandlingId = behandlingId,
-//            vedtakstidspunkt = vedtakstidspunkt,
-//            virkningsdato = virkningsdato,
-//            utfall = utfall,
-//        )
         visitAlleIverksettingsdager(visitor)
-//        visitor.postVisitIverksettingDag(
-//            vedtakId = vedtakId,
-//            behandlingId = behandlingId,
-//            vedtakstidspunkt = vedtakstidspunkt,
-//            virkningsdato = virkningsdato,
-//            utfall = utfall,
-//        )
     }
 
     override fun compareTo(other: Iverksetting) = this.vedtakstidspunkt.compareTo(other.vedtakstidspunkt)
