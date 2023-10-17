@@ -18,36 +18,30 @@ repositories {
 
 dependencies {
     implementation(project(path = ":modell"))
-    implementation(libs.aktivitetslogg)
 
+    implementation(libs.dp.aktivitetslogg)
     // Kontrakter for dp-iverksett
     implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20231013143623_91d0394")
 
-    implementation(libs.jackson.core)
-    implementation(libs.jackson.datatype.jsr310)
-
     // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-slf4j/
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:${libs.versions.kotlinx.coroutines.slf4j.get()}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.1")
 
     // POC - iverksett api
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.bundles.ktor.client)
+    implementation(libs.bundles.jackson)
     implementation(libs.ktor.serialization.jackson)
-    implementation(libs.ktor.client.logging.jvm)
-    implementation("com.github.navikt.dp-biblioteker:oauth2-klient:${libs.versions.dagpenger.biblioteker.get()}")
+    implementation(libs.dp.biblioteker.oauth2.klient)
 
     implementation(libs.rapids.and.rivers)
     implementation(libs.konfig)
     implementation(libs.kotlin.logging)
 
-    implementation(libs.bundles.database)
+    implementation(libs.bundles.postgres)
 
-    testImplementation(libs.testcontainer.postgresql)
-    testImplementation(libs.ktor.client.mock)
+    testImplementation(libs.mockk)
+    testImplementation(libs.bundles.postgres.test)
+    testImplementation("io.ktor:ktor-client-mock:${libs.versions.ktor.get()}")
     testImplementation("io.kotest:kotest-assertions-core-jvm:${libs.versions.kotest.get()}")
-
-    testImplementation("io.mockk:mockk:${libs.versions.mockk.get()}")
 }
 
 application {
