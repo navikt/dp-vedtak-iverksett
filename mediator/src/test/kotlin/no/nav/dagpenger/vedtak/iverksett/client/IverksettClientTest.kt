@@ -31,6 +31,17 @@ internal class IverksettClientTest {
         }
 
     @Test
+    fun `409 Conflict betyr at utbetalingsvedtak allerede er sendt til iverksetting`() {
+        runBlocking {
+            val mockEngine = mockEngine(HttpStatusCode.Conflict.value)
+            val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
+            assertThrows<UtbetalingsvedtakAlleredeIverksattException> {
+                client.iverksett(iverksettDagpengerdDtoDummy())
+            }
+        }
+    }
+
+    @Test
     fun `Om iverksett clienten svarer med 4xx og 5xx status resulterer det i exception`() =
         runBlocking {
             (399 until 599).forEach { statusCode ->

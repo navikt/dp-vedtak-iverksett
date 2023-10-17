@@ -5,6 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -15,6 +17,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendEncodedPathSegments
 import io.ktor.serialization.jackson.jackson
@@ -40,6 +43,15 @@ internal class IverksettClient(
     private val httpClient =
         HttpClient(engine) {
             expectSuccess = true
+            HttpResponseValidator {
+                handleResponseExceptionWithRequest { exception, _ ->
+                    val clientException = exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
+                    val exceptionResponse = clientException.response
+                    if (exceptionResponse.status == HttpStatusCode.Conflict) {
+                        throw UtbetalingsvedtakAlleredeIverksattException()
+                    }
+                }
+            }
 
             defaultRequest {
                 header(HttpHeaders.Authorization, "Bearer ${tokenProvider.invoke()}")
@@ -66,12 +78,15 @@ internal class IverksettClient(
         runBlocking {
             val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()
             withContext(Dispatchers.IO) {
-                httpClient.post(url) {
-                    header("nav-call-id", MDC.get(behandlingId))
-                    header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
-                    header(HttpHeaders.ContentType, ContentType.Application.Json)
-                    setBody(iverksettDto)
-                }
+                val httpResponse =
+                    httpClient.post(url) {
+                        header("nav-call-id", MDC.get(behandlingId))
+                        header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
+                        header(HttpHeaders.ContentType, ContentType.Application.Json)
+                        setBody(iverksettDto)
+                    }
             }
         }
 }
+
+class UtbetalingsvedtakAlleredeIverksattException : RuntimeException()
