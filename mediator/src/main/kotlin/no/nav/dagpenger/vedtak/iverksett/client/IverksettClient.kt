@@ -37,7 +37,8 @@ internal class IverksettClient(
     engine: HttpClientEngine = CIO.create {},
 ) {
     private companion object {
-        val sikkerLogg = KotlinLogging.logger("tjenestekall.IverksettClient")
+        val logger = KotlinLogging.logger {}
+        val sikkerLogg = KotlinLogging.logger("tjenestekall")
     }
 
     private val httpClient =
@@ -45,7 +46,8 @@ internal class IverksettClient(
             expectSuccess = true
             HttpResponseValidator {
                 handleResponseExceptionWithRequest { exception, _ ->
-                    val clientException = exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
+                    val clientException =
+                        exception as? ClientRequestException ?: return@handleResponseExceptionWithRequest
                     val exceptionResponse = clientException.response
                     if (exceptionResponse.status == HttpStatusCode.Conflict) {
                         throw UtbetalingsvedtakAlleredeIverksattException()
@@ -78,13 +80,16 @@ internal class IverksettClient(
         runBlocking {
             val url = URLBuilder(baseUrl).appendEncodedPathSegments("api", "iverksetting").build()
             withContext(Dispatchers.IO) {
-                val httpResponse =
+                try {
                     httpClient.post(url) {
                         header("nav-call-id", MDC.get(behandlingId))
                         header(HttpHeaders.XCorrelationId, MDC.get(behandlingId))
                         header(HttpHeaders.ContentType, ContentType.Application.Json)
                         setBody(iverksettDto)
                     }
+                } catch (uaie: UtbetalingsvedtakAlleredeIverksattException) {
+                    logger.info { "Vedtak med behandlingId: ${iverksettDto.behandlingId} er allerede sendt til iverksetting" }
+                }
             }
         }
 }

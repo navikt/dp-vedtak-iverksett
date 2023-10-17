@@ -12,6 +12,7 @@ import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksperiodeDto
 import no.nav.dagpenger.kontrakter.iverksett.Vedtaksresultat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,7 +22,7 @@ internal class IverksettClientTest {
     private val tokenProvider = { "token" }
 
     @Test
-    fun `iverksett clienten svarer 202`() =
+    fun `202 status fra iverksett`() {
         runBlocking {
             val mockEngine = mockEngine(202)
             val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
@@ -29,29 +30,32 @@ internal class IverksettClientTest {
                 iverksettDagpengerdDtoDummy(),
             )
         }
+    }
 
     @Test
-    fun `409 Conflict betyr at utbetalingsvedtak allerede er sendt til iverksetting`() {
+    fun `409 status, tidligere iverksatte vedtak fører ikke til at vi kaster Exception`() {
         runBlocking {
             val mockEngine = mockEngine(HttpStatusCode.Conflict.value)
             val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
-            assertThrows<UtbetalingsvedtakAlleredeIverksattException> {
+            assertDoesNotThrow {
                 client.iverksett(iverksettDagpengerdDtoDummy())
             }
         }
     }
 
     @Test
-    fun `Om iverksett clienten svarer med 4xx og 5xx status resulterer det i exception`() =
+    fun `4xx og 5xx status resulterer i exception, bortsett fra 409`() =
         runBlocking {
             (399 until 599).forEach { statusCode ->
-                val mockEngine = mockEngine(statusCode)
-                val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
-                assertThrows<RuntimeException> {
-                    runBlocking {
-                        client.iverksett(
-                            iverksettDagpengerdDtoDummy(),
-                        )
+                if (statusCode != HttpStatusCode.Conflict.value) {
+                    val mockEngine = mockEngine(statusCode)
+                    val client = IverksettClient(baseUrl = "http://localhost/", tokenProvider, mockEngine)
+                    assertThrows<RuntimeException> {
+                        runBlocking {
+                            client.iverksett(
+                                iverksettDagpengerdDtoDummy(),
+                            )
+                        }
                     }
                 }
             }
