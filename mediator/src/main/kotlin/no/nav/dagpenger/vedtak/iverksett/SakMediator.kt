@@ -28,7 +28,7 @@ internal class SakMediator(private val sakRepository: SakRepository, private val
 }
 
 private val logger = KotlinLogging.logger { }
-private val sikkerLogger = KotlinLogging.logger { "tjenestekall.SakMediator" }
+private val sikkerLogger = KotlinLogging.logger("tjenestekall")
 
 private fun logError(
     hendelse: UtbetalingsvedtakFattetHendelse,
