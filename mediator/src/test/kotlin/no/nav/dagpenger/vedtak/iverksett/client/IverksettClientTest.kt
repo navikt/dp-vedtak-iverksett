@@ -6,6 +6,7 @@ import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import no.nav.dagpenger.kontrakter.felles.Personident
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.VedtakType
 import no.nav.dagpenger.kontrakter.iverksett.VedtaksdetaljerDto
@@ -65,7 +66,7 @@ internal class IverksettClientTest {
         IverksettDto(
             sakId = UUID.randomUUID(),
             behandlingId = UUID.randomUUID(),
-            personIdent = "12345678901",
+            personident = Personident("15507600333"),
             vedtak =
                 VedtaksdetaljerDto(
                     vedtakstype = VedtakType.UTBETALINGSVEDTAK,

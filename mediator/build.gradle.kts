@@ -21,7 +21,7 @@ dependencies {
 
     implementation(libs.dp.aktivitetslogg)
     // Kontrakter for dp-iverksett
-    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20231013143623_91d0394")
+    implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20231124154225_d640fba")
 
     // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-slf4j/
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.1")

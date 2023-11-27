@@ -15,7 +15,7 @@ import java.time.LocalDate
 class SakMediatorTest {
     private val testRapid = TestRapid()
     private val førsteVirkningsdato = LocalDate.now().minusDays(14)
-    private val ident = "12345123451"
+    private val ident = "15507600333"
     private val sakId = "SAK_NUMMER_1"
     private val sakRepository = InMemorySakTestRepository()
     private val iverksettClientMock = mockk<IverksettClient>()
