@@ -1,5 +1,6 @@
 package no.nav.dagpenger.vedtak.iverksett.client.mapper
 
+import no.nav.dagpenger.kontrakter.felles.Personident
 import no.nav.dagpenger.kontrakter.iverksett.ForrigeIverksettingDto
 import no.nav.dagpenger.kontrakter.iverksett.IverksettDto
 import no.nav.dagpenger.kontrakter.iverksett.UtbetalingDto
@@ -45,7 +46,7 @@ class IverksettDtoBuilder(sak: Sak) : SakVisitor {
             saksreferanse = if (sakIdUUID == null) sakId.sakId else null,
             sakId = sakIdUUID,
             behandlingId = behandlingId,
-            personIdent = ident.identifikator(),
+            personident = Personident(ident.identifikator()),
             forrigeIverksetting = forrigeIverksettingDto(),
             vedtak =
                 VedtaksdetaljerDto(

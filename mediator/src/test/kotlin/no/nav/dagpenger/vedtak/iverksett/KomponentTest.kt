@@ -30,7 +30,7 @@ class KomponentTest {
 
             testRapid.sendTestMessage(
                 utbetalingsvedtakFattet(
-                    ident = "12345678901",
+                    ident = "15507600333",
                     virkningsdato = LocalDate.now(),
                     dagsbeløp = 800.0,
                     sakId = SakId(UUID.randomUUID().toString()),
