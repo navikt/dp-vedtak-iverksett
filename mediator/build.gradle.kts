@@ -24,7 +24,7 @@ dependencies {
     implementation("no.nav.dagpenger.kontrakter:iverksett:2.0_20231124154225_d640fba")
 
     // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-slf4j/
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:1.7.3")
 
     // POC - iverksett api
     implementation(libs.bundles.ktor.client)
